@@ -1,6 +1,7 @@
 /**
  * Módulo de Interpretación Automática (Sistema Experto Zulliger/Rorschach)
- * Basado en las reglas matemáticas del Sistema Comprehensivo de Exner.
+ * Basado en las agrupaciones clínicas del Sistema Comprehensivo de Exner
+ * Referencia: Reporte de Evaluación Psicolaboral CHESSSS.
  */
 
 function obtenerValorNum(id) {
@@ -20,70 +21,170 @@ function obtenerEB() {
 }
 
 function generarInterpretacion() {
-    let reporte = "<h3>INFORME DE INTERPRETACIÓN ESTRUCTURAL</h3>";
+    let reporte = "<h2 style='text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px;'>INFORME DE INTERPRETACIÓN</h2>";
     
-    // 1. ESTILO VIVENCIAL Y CONTROLES (EB, EA, eb, es, D, AdjD)
-    reporte += "<h4>1. Estilo Vivencial y Tolerancia al Estrés</h4><ul>";
-    
+    // Extracción de variables
     const [M, SumC] = obtenerEB();
-    const EA = obtenerValorNum('res_EA');
     const D = obtenerValorNum('res_D');
-    const AdjD = obtenerValorNum('res_AdjEs'); // In the HTML, AdjD is actually res_AdjEs according to the previous run, wait let's check it.
-    
-    // Determinar estilo
-    if (M > (SumC + 1.5)) {
-        reporte += "<li><b>Estilo Introversivo:</b> El paciente prefiere procesar la información internamente, utilizando la ideación y la reflexión antes de actuar. Tiende a mantener sus emociones en segundo plano al tomar decisiones.</li>";
-    } else if (SumC > (M + 1.5)) {
-        reporte += "<li><b>Estilo Extratensivo:</b> El paciente es más propenso a descargar sus emociones en el entorno. Sus decisiones están fuertemente influenciadas por los afectos y el ensayo y error.</li>";
-    } else if (M > 0 || SumC > 0) {
-        reporte += "<li><b>Estilo Ambigual:</b> El paciente no tiene un estilo de afrontamiento consistente. Alterna entre la ideación y la expresión emocional, lo que puede volverlo impredecible en la toma de decisiones y propenso a la duda.</li>";
-    } else {
-        reporte += "<li><b>Estilo Coartado:</b> Hay una marcada restricción de los recursos psicológicos (ideativos y afectivos), lo que dificulta el afrontamiento de las exigencias del entorno.</li>";
-    }
-
-    // Tolerancia al estrés (D)
-    const D_val = obtenerValorNum('res_D') || 0;
-    const AdjD_val = obtenerValorNum('res_AdjEs') || 0; 
-    
-    if (D_val < 0) {
-        if (AdjD_val < 0) {
-            reporte += "<li><b>Sobrecarga Crónica (D<0, AdjD<0):</b> El sujeto padece una sobrecarga de estímulos perturbadores de larga data. Es vulnerable a la desorganización, ansiedad y tiene controles frágiles ante el estrés.</li>";
-        } else {
-            reporte += "<li><b>Estrés Situacional (D<0, AdjD=0):</b> El paciente está atravesando un estado de estrés agudo debido a situaciones recientes, pero sus capacidades base de control son adecuadas.</li>";
-        }
-    } else if (D_val > 0) {
-        reporte += "<li><b>Capacidad de Control (D>0):</b> Excelente tolerancia al estrés. El paciente tiene recursos de sobra para lidiar con situaciones complejas sin desorganizarse.</li>";
-    } else {
-        reporte += "<li><b>Equilibrio Precario (D=0):</b> Los recursos empatan con las demandas. Funciona bien en lo cotidiano, pero situaciones nuevas o estresantes podrían desestabilizarlo.</li>";
-    }
-    reporte += "</ul>";
-
-    // 2. AFECTOS
-    reporte += "<h4>2. Área Afectiva</h4><ul>";
-    const Afr = obtenerValorNum('res_Afr');
-    if (Afr < 0.46) {
-        reporte += "<li><b>Evitación Afectiva (Afr bajo):</b> Tendencia a evitar o retirarse de situaciones con alta carga emocional. Le incomodan los estímulos afectivos directos.</li>";
-    } else if (Afr > 0.89) {
-        reporte += "<li><b>Atracción Afectiva (Afr alto):</b> Fuerte atracción hacia estímulos emocionales. Puede verse fácilmente desbordado o sobre-estimulado por situaciones afectivas.</li>";
-    } else {
-        reporte += "<li><b>Interés Afectivo Esperable:</b> Muestra una receptividad normal y adaptativa frente a los estímulos emocionales del entorno.</li>";
-    }
-    reporte += "</ul>";
-
-    // 3. PROCESAMIENTO Y MEDIACIÓN
-    reporte += "<h4>3. Procesamiento y Mediación Cognitiva</h4><ul>";
+    const AdjD = obtenerValorNum('res_AdjD') || obtenerValorNum('res_Adjes'); // Fallback to id used in summary
     const L = obtenerValorNum('res_L');
-    if (L > 0.99) {
-        reporte += "<li><b>Rigidez (L alto):</b> Enfoque excesivamente simplificador y rígido. Evita la complejidad, lo que le impide percibir matices sutiles en su entorno.</li>";
-    } else if (L > 0 && L < 0.30) {
-        reporte += "<li><b>Complejidad (L bajo):</b> Involucramiento excesivo con la complejidad. Puede que le cueste filtrar información innecesaria, perdiéndose en los detalles.</li>";
-    } else {
-        reporte += "<li><b>Procesamiento Adaptativo (L normal):</b> Equilibrio adecuado entre simplificación y atención a la complejidad.</li>";
-    }
-    reporte += "</ul>";
+    const Afr = obtenerValorNum('res_Afr');
+    const FC = obtenerValorNum('v_FC');
+    const CF = obtenerValorNum('v_CF');
+    const C = obtenerValorNum('v_C');
+    const S = obtenerValorNum('v_S');
+    const egocentrismo = obtenerValorNum('res_3r_R');
+    const Fr = obtenerValorNum('v_Fr');
+    const rF = obtenerValorNum('v_rF');
+    const MOR = obtenerValorNum('v_MOR');
+    const COP = obtenerValorNum('v_COP');
+    const AG = obtenerValorNum('v_AG');
+    const PER = obtenerValorNum('v_PER');
+    const Zf = obtenerValorNum('v_Zf');
+    const XA = obtenerValorNum('res_XA');
+    const WDA = obtenerValorNum('res_WDA');
+    const Xmenos = obtenerValorNum('res_Xmenos');
+    const SumPon6 = obtenerValorNum('res_SumPon6');
 
-    // 4. ÍNDICES ESPECIALES
-    reporte += "<h4>4. Alertas Clínicas (Índices Especiales)</h4><ul>";
+    // Estilos CSS para el texto
+    const pStyle = "text-align: justify; font-size: 14px; margin-bottom: 12px;";
+
+    // ----------------------------------------------------
+    // 1. SECTOR PRINCIPAL (Estilo Vivencial y Controles)
+    // ----------------------------------------------------
+    reporte += "<h3><u>Sector Principal</u></h3>";
+    reporte += `<p style="${pStyle}">`;
+    if (L > 0.99) {
+        reporte += "Con respecto al valor de Lambda, se encuentra elevado, indicando una tendencia a la sobresimplificación de la percepción y resolución de situaciones, evitando involucrarse con la complejidad del entorno. ";
+    } else if (L < 0.30 && L > 0) {
+        reporte += "Con respecto al valor de Lambda, se encuentra disminuido, indicando un sobreinvolucramiento con los estímulos y dificultad para simplificar las situaciones, lo que puede resultar en una pérdida de eficacia. ";
+    } else {
+        reporte += "Con respecto al valor de Lambda, se encuentra dentro de los valores esperables, indicando una buena capacidad para la simplificación de la percepción y resolución de la situación. ";
+    }
+
+    if (M > (SumC + 1.5)) {
+        reporte += "El estilo vivencial es definido de estilo introversivo, tendiendo a procesar la información internamente, utilizando la ideación y la reflexión antes de actuar, manteniendo las emociones en segundo plano al tomar decisiones. ";
+    } else if (SumC > (M + 1.5)) {
+        reporte += "El estilo vivencial es definido de estilo extratensivo, tendiendo a mezclar los sentimientos con sus procesos cognitivos, intercambiando con el medio y resolviendo mediante ensayo y error. ";
+    } else {
+        reporte += "El estilo vivencial es ambigual, observándose que el sujeto no cuenta con un patrón consistente a la hora de la toma de decisiones, oscilando entre la reflexión ideativa y el ensayo y error emocional. ";
+    }
+
+    if (D < 0) {
+        if (AdjD < 0) {
+            reporte += "En relación a sus recursos y tolerancia al estrés, se destaca que el sujeto presenta un estado de malestar crónico persistente frente a las demandas estimulares, dificultando el proceso de mantener y dirigir su conducta, indicando vulnerabilidad a la desorganización.";
+        } else {
+            reporte += "En relación a sus recursos, se observa un estado de sobrecarga situacional (estrés agudo) debido a demandas del entorno actual, aunque en condiciones habituales el sujeto posee una capacidad base adecuada para dirigir sus conductas.";
+        }
+    } else {
+        reporte += "Se destaca que el sujeto cuenta con los recursos suficientes para hacerle frente a las ansiedades o demandas estimulares del medio, mostrando estabilidad y buen control de la conducta.";
+    }
+    reporte += "</p>";
+
+    // ----------------------------------------------------
+    // 2. AFECTOS
+    // ----------------------------------------------------
+    reporte += "<h3><u>Afectos</u></h3>";
+    reporte += `<p style="${pStyle}">`;
+    if (FC > (CF + C)) {
+        reporte += "En la relación que existe entre sus intercambios emocionales se puede observar cómo están regidos por el control cognitivo (FC elevado), siendo cuidadoso en su expresión; utilizando la ideación como soporte para los mismos. ";
+    } else if ((CF + C) > FC) {
+        reporte += "En sus intercambios emocionales se observa un predominio de la espontaneidad y descarga directa de los afectos (CF+C predominante), con menor modulación cognitiva, lo que puede derivar en reacciones impulsivas. ";
+    }
+
+    if (Afr < 0.46) {
+        reporte += "El Índice Afectivo (Afr) se encuentra disminuido, por lo que el sujeto presenta poco interés por procesar estímulos afectivos, o una marcada tendencia a evitar la estimulación emocional o situaciones de alta carga afectiva. ";
+    } else if (Afr > 0.89) {
+        reporte += "El Índice Afectivo (Afr) se encuentra elevado, indicando una fuerte atracción y receptividad a los estímulos emocionales, pudiendo verse fácilmente desbordado por ellos. ";
+    }
+
+    if (S > 3) {
+        reporte += "Cabe destacar además que el valor de S se encuentra aumentado, indicando un fuerte patrón de oposición, clara hostilidad hacia el entorno, y baja tolerancia a la frustración.";
+    }
+    reporte += "</p>";
+
+    // ----------------------------------------------------
+    // 3. AUTOPERCEPCIÓN
+    // ----------------------------------------------------
+    reporte += "<h3><u>Autopercepción</u></h3>";
+    reporte += `<p style="${pStyle}">`;
+    if (egocentrismo < 0.33) {
+        reporte += "El índice de egocentrismo se encuentra disminuido, indicando una valoración negativa de sí mismo en comparación con los demás, lo que sugiere baja autoestima o tendencia a desestimar su propio valor. ";
+    } else if (egocentrismo > 0.44) {
+        reporte += "El índice de egocentrismo se encuentra aumentado, significando autocentramiento, tomándose a él mismo como centro de sus preocupaciones. ";
+    } else {
+        reporte += "El índice de egocentrismo se encuentra dentro del rango esperable, indicando una estimación equilibrada de su propia valía. ";
+    }
+
+    if ((Fr + rF) > 0) {
+        reporte += "Se nota además la existencia de componentes narcisistas y sobreestimación de la valía personal. ";
+    }
+
+    if (MOR >= 2) {
+        reporte += "Su autoimagen está teñida por un pesimismo que genera una visión negativa, indicando fuertes sentimientos de desvitalización o daño (MOR elevado). ";
+    }
+    reporte += "</p>";
+
+    // ----------------------------------------------------
+    // 4. INTERPERSONAL
+    // ----------------------------------------------------
+    reporte += "<h3><u>Interpersonal</u></h3>";
+    reporte += `<p style="${pStyle}">`;
+    if (COP >= 2 && AG <= 2) {
+        reporte += "Se observa una actitud general positiva y colaborativa hacia las relaciones interpersonales, percibiendo los intercambios como instancias de cooperación recíproca. ";
+    } else if (AG > 2) {
+        reporte += "Su percepción de los otros está teñida por actitudes de confrontación, percibiendo el entorno como hostil, lo que genera interacciones marcadas por la asertividad agresiva o actitud defensiva hacia los demás. ";
+    }
+
+    if (PER >= 2) {
+        reporte += "El sujeto asume una posición rígida en los vínculos interpersonales, desplegando un autoritarismo intelectual como mecanismo de defensa en el encuentro con el otro. ";
+    }
+    
+    if (COP < 2 && AG < 2 && PER < 2) {
+        reporte += "En el área de relaciones interpersonales, no se registran posturas extremas de agresividad, colaboración desmedida ni rigidez vincular predominante.";
+    }
+    reporte += "</p>";
+
+    // ----------------------------------------------------
+    // 5. PROCESADO Y MEDIACIÓN
+    // ----------------------------------------------------
+    reporte += "<h3><u>Procesado y Mediación</u></h3>";
+    reporte += `<p style="${pStyle}">`;
+    if (Zf > 12) {
+        reporte += "El valor alto de Zf destaca que el sujeto presenta un alto monto de iniciativa o motivación durante el protocolo, indicando esfuerzo de procesamiento superior al esperado, propio de autoexigencia elevada. ";
+    } else if (Zf < 9) {
+        reporte += "Se observa una baja motivación o déficit en el esfuerzo por integrar la información del entorno (Zf bajo). ";
+    }
+
+    if (XA < 0.70 || WDA < 0.75) {
+        reporte += "En relación con el ajuste perceptivo, se observa que es poco convencional y no acorde a lo socialmente esperado (XA% o WDA% disminuido). ";
+        if (Xmenos > 0.20) {
+            reporte += "Esto se ve agravado por un elevado grado de distorsión perceptiva (X-% aumentado), indicando un alejamiento significativo de la realidad objetiva en su mediación cognitiva. ";
+        }
+    } else {
+        reporte += "En relación con el ajuste perceptivo, el sujeto presenta una adecuada traducción de los estímulos, mostrando un enfoque convencional y un buen contacto y adaptación a la realidad objetiva. ";
+    }
+    reporte += "</p>";
+
+    // ----------------------------------------------------
+    // 6. IDEACIÓN
+    // ----------------------------------------------------
+    reporte += "<h3><u>Ideación</u></h3>";
+    reporte += `<p style="${pStyle}">`;
+    if (SumPon6 > 12) {
+        reporte += "El sujeto no presenta claridad del pensamiento, observándose fallas lógicas o deslices cognitivos severos que interfieren en la coherencia de su ideación (SumaPond6 elevada). ";
+    } else if (SumPon6 > 0 && SumPon6 <= 12) {
+        reporte += "Se presentan algunos deslices cognitivos leves o inmadurez en la articulación del pensamiento, pero sin llegar a comprometer severamente el juicio de realidad. ";
+    } else {
+        reporte += "El sujeto presenta claridad de pensamiento, con un proceso ideativo lógico, coherente y libre de interferencias formales. ";
+    }
+    reporte += "</p>";
+
+    // ----------------------------------------------------
+    // 7. CONSTELACIONES (Alertas)
+    // ----------------------------------------------------
+    reporte += "<h3><u>Constelaciones</u></h3>";
+    reporte += `<ul style="font-size: 14px; line-height: 1.6;">`;
     
     const countChecked = (prefix, max) => {
         let count = 0;
@@ -94,26 +195,35 @@ function generarInterpretacion() {
         return count;
     };
 
-    const pti_count = countChecked('pti', 4);
-    if (pti_count >= 3) reporte += "<li>⚠️ <b>Índice de Trastorno del Pensamiento (PTI):</b> Positivo. Indica fallas severas en la mediación cognitiva, distorsión perceptiva y problemas en el juicio de realidad.</li>";
+    let constelacionesActivas = false;
     
-    const depi_count = countChecked('depi', 6);
-    if (depi_count >= 5) reporte += "<li>⚠️ <b>Índice de Depresión (DEPI):</b> Positivo. Indica intensa aflicción emocional, desesperanza o rasgos depresivos significativos.</li>";
-    
-    const cdi_count = countChecked('cdi', 4);
-    if (cdi_count >= 4) reporte += "<li>⚠️ <b>Índice de Déficit de Afrontamiento (CDI):</b> Positivo. Dificultades crónicas para lidiar con las demandas cotidianas, inmadurez en las relaciones interpersonales.</li>";
-    
-    const scon_count = countChecked('scon', 11);
-    if (scon_count >= 8) reporte += "<li>⚠️ <b>Constelación de Suicidio (S-CON):</b> Positivo. ALERTA CLÍNICA grave. Riesgo elevado de conductas autoagresivas.</li>";
-    
-    const hvi_count = countChecked('hvi', 7);
-    if (hvi_count >= 4) reporte += "<li>⚠️ <b>Índice de Hipervigilancia (HVI):</b> Positivo. Actitud de desconfianza, escrutinio constante del entorno y paranoia defensiva.</li>";
-    
-    const obs_count = countChecked('obs', 4);
-    if (obs_count >= 3) reporte += "<li>⚠️ <b>Índice de Estilo Obsesivo (OBS):</b> Positivo. Marcado perfeccionismo, rumiación excesiva y necesidad patológica de control y exactitud.</li>";
+    if (countChecked('pti', 4) >= 3) {
+        reporte += "<li><b>Índice de Trastorno del Pensamiento (PTI):</b> Positivo. Indica distorsión perceptiva severa y problemas en el juicio de realidad.</li>";
+        constelacionesActivas = true;
+    }
+    if (countChecked('depi', 6) >= 5) {
+        reporte += "<li><b>Índice de Depresión (DEPI):</b> Positivo. El sujeto está experimentando una seria perturbación del estado del ánimo, caracterizado por un abatimiento anímico.</li>";
+        constelacionesActivas = true;
+    }
+    if (countChecked('cdi', 4) >= 4) {
+        reporte += "<li><b>Índice de Déficit de Afrontamiento (CDI):</b> Positivo. Dificultades crónicas para lidiar con las demandas y déficit en habilidades sociales.</li>";
+        constelacionesActivas = true;
+    }
+    if (countChecked('scon', 11) >= 8) {
+        reporte += "<li><b>Constelación de Suicidio (S-CON):</b> Positivo. Indica potencial riesgo autodestructivo inminente (ALERTA).</li>";
+        constelacionesActivas = true;
+    }
+    if (countChecked('hvi', 7) >= 4) {
+        reporte += "<li><b>Índice de Hipervigilancia (HVI):</b> Positivo. Indicando estado de alerta continua y mantenimiento de una actitud de recelo y desconfianza hacia su entorno.</li>";
+        constelacionesActivas = true;
+    }
+    if (countChecked('obs', 4) >= 3) {
+        reporte += "<li><b>Índice de Estilo Obsesivo (OBS):</b> Positivo. Marcado perfeccionismo y necesidad de control.</li>";
+        constelacionesActivas = true;
+    }
 
-    if (pti_count < 3 && depi_count < 5 && cdi_count < 4 && scon_count < 8 && hvi_count < 4 && obs_count < 3) {
-        reporte += "<li><i>No se han activado alertas críticas en los índices patológicos.</i></li>";
+    if (!constelacionesActivas) {
+        reporte += "<li><i>El protocolo no presenta puntuaciones positivas críticas en las constelaciones evaluadas.</i></li>";
     }
     reporte += "</ul>";
 
@@ -128,7 +238,7 @@ function mostrarModalInterpretacion() {
         contenido.innerHTML = generarInterpretacion();
         modal.style.display = 'flex';
     } else {
-        alert("Primero cargue datos y luego abra la interpretación.");
+        alert("Primero cargue datos y genere el sumario estructural.");
     }
 }
 
@@ -143,11 +253,11 @@ function copiarInterpretacion() {
     const contenido = document.getElementById('contenido-interpretacion');
     if (!contenido) return;
     
+    // Clonar contenido para limpiar estilos no deseados antes de copiar
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = contenido.innerHTML;
-    const textToCopy = tempDiv.innerText;
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
+    
+    navigator.clipboard.writeText(tempDiv.innerText).then(() => {
         alert("¡Informe copiado al portapapeles! Ya podés pegarlo en tu Word.");
     }).catch(err => {
         alert("Error al copiar: " + err);
