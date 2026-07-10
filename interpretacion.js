@@ -146,16 +146,24 @@ function generarInterpretacion() {
     reporte += "</p>";
 
     // ----------------------------------------------------
-    // 5. PROCESADO Y MEDIACIÓN
+    // 5. PROCESADO
     // ----------------------------------------------------
-    reporte += "<h3><u>Procesado y Mediación</u></h3>";
+    reporte += "<h3><u>Procesado</u></h3>";
     reporte += `<p style="${pStyle}">`;
     if (Zf > 12) {
         reporte += "El valor alto de Zf destaca que el sujeto presenta un alto monto de iniciativa o motivación durante el protocolo, indicando esfuerzo de procesamiento superior al esperado, propio de autoexigencia elevada. ";
     } else if (Zf < 9) {
         reporte += "Se observa una baja motivación o déficit en el esfuerzo por integrar la información del entorno (Zf bajo). ";
+    } else {
+        reporte += "El esfuerzo de procesamiento y la iniciativa para integrar la información del entorno se encuentran dentro de los parámetros esperables. ";
     }
+    reporte += "</p>";
 
+    // ----------------------------------------------------
+    // 6. MEDIACIÓN
+    // ----------------------------------------------------
+    reporte += "<h3><u>Mediación</u></h3>";
+    reporte += `<p style="${pStyle}">`;
     if (XA < 0.70 || WDA < 0.75) {
         reporte += "En relación con el ajuste perceptivo, se observa que es poco convencional y no acorde a lo socialmente esperado (XA% o WDA% disminuido). ";
         if (Xmenos > 0.20) {
