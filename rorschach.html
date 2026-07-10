@@ -1071,13 +1071,61 @@
         }
         return val;
     }
+    const normasRorschach = {
+        'res_R': [17.92, 26.72],
+        'res_L': [0.29, 0.91],
+        'res_EA': [6.28, 11.04],
+        'res_es': [5.35, 11.33],
+        'res_FM': [2.43, 5.05],
+        'res_m': [0.29, 2.27],
+        'res_SumCprime': [0.33, 2.65],
+        'res_SumV': [0, 0.89],
+        'res_SumT': [0.34, 1.56],
+        'res_SumY': [0, 1.57],
+        'res_WSumC': [2.58, 6.14],
+        'res_Afr': [0.51, 0.83],
+        'res_Blends': [3.07, 7.23],
+        'res_COP_int': [0.62, 3.38],
+        'res_AG_int': [0, 2.26],
+        'res_PER_int': [0, 1.83],
+        'res_Isol': [0.10, 0.29],
+        'res_3r2R': [0.31, 0.49],
+        'res_Fr_rF': [0, 0.54],
+        'res_MOR_autop': [0, 1.68],
+        'res_Hpuro': [1.50, 4.92],
+        'res_Zf': [9.06, 14.62],
+        'res_Zd': [-3.5, 3.5],
+        'res_PSV_med': [0, 0.32],
+        'res_XA': [0.86, 0.98],
+        'res_WDA': [0.88, 1.00],
+        'res_Xminus': [0.02, 0.12],
+        'res_Xplus': [0.68, 0.86],
+        'res_2AB': [0.09, 3.05],
+        'res_SumPon6_ide': [0.40, 8.56],
+        'res_SumMQ': [0.44, 3.38]
+    };
+
     function set(id, val) { 
         let el = document.getElementById(id); 
         if(!el) return;
+        let originalVal = val;
+        let numericVal = null;
         if(typeof val === 'number') {
             if(!Number.isInteger(val)) val = val.toFixed(2);
+            numericVal = originalVal;
+        } else if (typeof val === 'string' && !isNaN(parseFloat(val)) && val.indexOf(':') === -1) {
+            numericVal = parseFloat(val);
         }
-        el.innerText = val; 
+        let outputHTML = val;
+        if (normasRorschach[id] && numericVal !== null) {
+            let [min, max] = normasRorschach[id];
+            if (numericVal < min) {
+                outputHTML += ' <span style="color:#3b82f6; font-weight:bold;" title="Debajo de la media (' + min + '-' + max + ')">↓</span>';
+            } else if (numericVal > max) {
+                outputHTML += ' <span style="color:#ef4444; font-weight:bold;" title="Sobre la media (' + min + '-' + max + ')">↑</span>';
+            }
+        }
+        el.innerHTML = outputHTML; 
     }
     function check(id, condition) { document.getElementById(id).checked = condition; return condition; }
 
@@ -1970,7 +2018,36 @@
 <script>
 const d = JSON.parse(localStorage.getItem('rorschach_data') || '{}');
 function v(id){ return d[id] !== undefined ? d[id] : '0'; }
-function set(id, val){ const el=document.getElementById(id); if(el) el.innerText=val; }
+
+const normasRorschach = {
+    'res_R': [17.92, 26.72], 'res_L': [0.29, 0.91], 'res_EA': [6.28, 11.04], 'res_es': [5.35, 11.33],
+    'res_FM': [2.43, 5.05], 'res_m': [0.29, 2.27], 'res_SumCprime': [0.33, 2.65], 'res_SumV': [0, 0.89],
+    'res_SumT': [0.34, 1.56], 'res_SumY': [0, 1.57], 'res_WSumC': [2.58, 6.14], 'res_Afr': [0.51, 0.83],
+    'res_Blends': [3.07, 7.23], 'res_COP_int': [0.62, 3.38], 'res_AG_int': [0, 2.26], 'res_PER_int': [0, 1.83],
+    'res_Isol': [0.10, 0.29], 'res_3r2R': [0.31, 0.49], 'res_Fr_rF': [0, 0.54], 'res_MOR_autop': [0, 1.68],
+    'res_Hpuro': [1.50, 4.92], 'res_Zf': [9.06, 14.62], 'res_Zd': [-3.5, 3.5], 'res_PSV_med': [0, 0.32],
+    'res_XA': [0.86, 0.98], 'res_WDA': [0.88, 1.00], 'res_Xminus': [0.02, 0.12], 'res_Xplus': [0.68, 0.86],
+    'res_2AB': [0.09, 3.05], 'res_SumPon6_ide': [0.40, 8.56], 'res_SumMQ': [0.44, 3.38]
+};
+
+function set(id, val) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let numericVal = null;
+    let originalVal = val;
+    if (typeof val === 'number') { numericVal = val; } 
+    else if (typeof val === 'string' && !isNaN(parseFloat(val)) && val.indexOf(':') === -1) { numericVal = parseFloat(val); }
+    let outputHTML = val;
+    if (normasRorschach[id] && numericVal !== null) {
+        let [min, max] = normasRorschach[id];
+        if (numericVal < min) {
+            outputHTML += ' <span style="color:#3b82f6; font-weight:bold;">↓</span>';
+        } else if (numericVal > max) {
+            outputHTML += ' <span style="color:#ef4444; font-weight:bold;">↑</span>';
+        }
+    }
+    el.innerHTML = outputHTML; 
+}
 function chk(id){ const el=document.getElementById(id); if(el) el.checked=!!d[id]; }
 
 // Patient
