@@ -102,21 +102,88 @@ function generarInterpretacion() {
     clusters['Controles'] = txtControles;
 
     let txtAfectos = "<h3><u>Afectos</u></h3><p style='" + pStyle + "'>";
+
+    // Paso 1: DEPI y CDI
+    if (DEPI > 5) {
+        txtAfectos += "El Índice de Depresión (DEPI) indica una perturbación seria del estado de ánimo o depresión abierta. ";
+        if (CDI > 3) {
+            txtAfectos += "Al presentarse conjuntamente con un Índice de Inhabilidad Social (CDI) positivo, sugiere que esta depresión puede ser secundaria a una dificultad crónica para establecer relaciones interpersonales gratificantes. ";
+        }
+    } else if (DEPI === 5) {
+        txtAfectos += "El Índice de Depresión (DEPI) se encuentra en el límite, sugiriendo susceptibilidad a variaciones anímicas significativas. ";
+    }
+
+    // Paso 2: EB, Lambda y EBPer
+    const EBPerText = document.getElementById('res_EBPer') ? document.getElementById('res_EBPer').innerText : "N/A";
+    if (WSumC > (M + 1.5)) {
+        txtAfectos += "El estilo vivencial extratensivo indica que el sujeto tiende a mezclar sus emociones con sus procesos cognitivos, utilizando el ensayo-error y viéndose más influido por la estimulación externa. ";
+        if (L > 0.99) {
+            txtAfectos += "Sin embargo, el alto valor de Lambda señala un estilo 'extratensivo-evitativo', propenso a simplificar situaciones complejas para ignorar o denegar emociones. ";
+        }
+        if (EBPerText !== "N/A" && EBPerText !== "Inf" && parseFloat(EBPerText) > 2.5) {
+            txtAfectos += "Además, el indicador EBPer señala que este estilo de respuesta está rigidificado, lo que resta flexibilidad y eficacia adaptativa. ";
+        }
+    }
+
+    // Paso 3: eb lado derecho (C', T, V, Y)
+    const SumCprime = obtenerValorNum('res_SumCprime');
+    const SumT = obtenerValorNum('res_SumT');
+    const SumV = obtenerValorNum('res_SumV');
+    const SumY = obtenerValorNum('res_SumY');
+    
+    if (SumCprime > 0 || SumT > 1 || SumV > 0 || SumY > 0) {
+        txtAfectos += "Con respecto a los estímulos internos que actúan fuera del control voluntario (sufrimiento y dolor psíquico): ";
+        if (SumCprime > 0) txtAfectos += "se observa constricción afectiva y freno a la expresión emocional (C'=" + SumCprime + "). ";
+        if (SumT > 1) txtAfectos += "se evidencia una fuerte necesidad de cercanía o sentimientos de soledad (T=" + SumT + "). ";
+        if (SumV > 0) txtAfectos += "se registra introspección con autocrítica negativa o desvalorización (V=" + SumV + "). ";
+        if (SumY > 0) txtAfectos += "se manifiesta malestar emocional agudo o sentimientos de parálisis y desvalimiento frente a estrés situacional (Y=" + SumY + "). ";
+    }
+
+    // Paso 4: SumC' vs SumPonC (WSumC)
+    if (SumCprime > 0 && SumCprime >= WSumC) {
+        txtAfectos += "La proporción de constricción indica que el sujeto tiende a internalizar en exceso y reprimir la externalización de sus afectos, lo que incrementa la tensión interna y eleva la probabilidad de desarrollar trastornos psicosomáticos. ";
+    }
+
+    // Paso 5: Afr
+    if (Afr > 0.89) {
+        txtAfectos += "El Índice Afectivo (Afr) elevado indica fuerte atracción y mayor productividad ante situaciones emocionales. ";
+    } else if (Afr < 0.46) {
+        txtAfectos += "El Índice Afectivo (Afr) disminuido refleja incomodidad, tendencia a evitar la estimulación emocional, retraimiento y posible aislamiento social. ";
+    }
+
+    // Paso 6: Intelectualización
+    const Sum2AB = obtenerValorNum('res_2AB');
+    if (Sum2AB > 3) {
+        txtAfectos += "El sujeto utiliza mecanismos pseudointelectuales (racionalizaciones) de forma excesiva para ocultar o reducir el impacto de las emociones disfóricas, haciéndolo vulnerable a la desorganización ante sobrecargas emocionales. ";
+    }
+
+    // Paso 7: CP
+    const CP = obtenerValorNum('v_CP');
+    if (CP > 0) {
+        txtAfectos += "La proyección de color (CP) sugiere el uso de la negación, sustituyendo emociones displacenteras por emociones eufóricas falsas e irreales (rasgos de tipo histeroide). ";
+    }
+
+    // Paso 8: FC : CF+C y C Pura
     if (FC > (CF + C)) {
-        txtAfectos += "En la relación que existe entre sus intercambios emocionales se puede observar cómo están regidos por el control cognitivo (FC elevado), siendo cuidadoso en su expresión; utilizando la ideación como soporte para los mismos. ";
+        txtAfectos += "En cuanto a la modulación de las descargas emocionales deliberadas, predominan los afectos controlados y modulados por el pensamiento (FC mayor a CF+C). ";
     } else if ((CF + C) > FC) {
-        txtAfectos += "En sus intercambios emocionales se observa un predominio de la espontaneidad y descarga directa de los afectos (CF+C predominante), con menor modulación cognitiva, lo que puede derivar en reacciones impulsivas. ";
+        txtAfectos += "En la modulación emocional se observa que las emociones son más relajadas y con menor control cognitivo (CF+C predominante). ";
+    }
+    if (C > 0) {
+        txtAfectos += "La presencia de Color Puro (C) advierte sobre descargas afectivas bruscas e impulsivas, sin intento de control cognitivo. ";
     }
 
-    if (Afr < 0.46) {
-        txtAfectos += "El Índice Afectivo (Afr) se encuentra disminuido, por lo que el sujeto presenta poco interés por procesar estímulos afectivos, o una marcada tendencia a evitar la estimulación emocional o situaciones de alta carga afectiva. ";
-    } else if (Afr > 0.89) {
-        txtAfectos += "El Índice Afectivo (Afr) se encuentra elevado, indicando una fuerte atracción y receptividad a los estímulos emocionales, pudiendo verse fácilmente desbordado por ellos. ";
-    }
-
+    // Paso 9: S
     if (S > 3) {
-        txtAfectos += "Cabe destacar además que el valor de S se encuentra aumentado, indicando un fuerte patrón de oposición, clara hostilidad hacia el entorno, y baja tolerancia a la frustración.";
+        txtAfectos += "El elevado uso del Espacio Blanco (S) advierte sobre componentes fuertemente hostiles, negativistas o de oposición que pueden comprometer la adaptación social. ";
     }
+
+    // Pasos 10-16: Complejas
+    const ColSomb = obtenerValorNum('v_ColSomb');
+    if (ColSomb > 0) {
+        txtAfectos += "La presencia de respuestas complejas de Color-Sombreado indica vivencias donde se mezclan el placer y el dolor psíquico, reflejando gran ambivalencia o confusión afectiva. ";
+    }
+
     txtAfectos += "</p>";
     clusters['Afectos'] = txtAfectos;
 
