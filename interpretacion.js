@@ -324,18 +324,89 @@ function generarInterpretacion() {
     clusters['Autopercepcion'] = txtAuto;
 
     let txtInter = "<h3><u>Percepción Interpersonal</u></h3><p style='" + pStyle + "'>";
-    if (COP >= 2 && AG <= 2) {
-        txtInter += "Se observa una actitud general positiva y colaborativa hacia las relaciones interpersonales, percibiendo los intercambios como instancias de cooperación recíproca. ";
-    } else if (AG > 2) {
-        txtInter += "Su percepción de los otros está teñida por actitudes de confrontación, percibiendo el entorno como hostil, lo que genera interacciones marcadas por la asertividad agresiva o actitud defensiva hacia los demás. ";
+
+    // Variables adicionales
+    const SumT_Inter = obtenerValorNum('res_SumT');
+    const Fd_Inter = obtenerValorNum('v_Fd');
+    const Isol = obtenerValorNum('res_Isol');
+    const H_puro_I = obtenerValorNum('v_H');
+    const H_paren_I = obtenerValorNum('v_Hparen');
+    const Hd_I = obtenerValorNum('v_Hd');
+    const Hd_paren_I = obtenerValorNum('v_Hdparen');
+    const GHR_I = obtenerValorNum('v_GHR');
+    const PHR_I = obtenerValorNum('v_PHR');
+
+    // Paso 1: CDI e HVI
+    if (CDI > 3) {
+        txtInter += "El Índice de Inhabilidad Social (CDI > 3) advierte sobre una estructura inmadura y una marcada ineptitud en la esfera relacional, presentando dificultades para enfrentar demandas sociales cotidianas y tendiendo a vínculos superficiales. ";
+    }
+    if (HVI > 0) {
+        if (SumT_Inter === 0) {
+            txtInter += "Presenta un Índice de Hipervigilancia (HVI) positivo acompañado de ausencia de Textura (T=0), lo que refleja un estilo hipervigilante crónico, estable y suspicaz hacia el entorno, manteniendo siempre distancia de seguridad. ";
+        } else {
+            txtInter += "Presenta un Índice de Hipervigilancia (HVI) positivo, pero con presencia de Textura (T>0), indicando que esta actitud de alerta y desconfianza es una reacción circunstancial ante lo que percibe como una amenaza actual del entorno. ";
+        }
     }
 
-    if (PER >= 2) {
-        txtInter += "El sujeto asume una posición rígida en los vínculos interpersonales, desplegando un autoritarismo intelectual como mecanismo de defensa en el encuentro con el otro. ";
+    // Paso 2: Proporción a:p
+    if (p > (a + 1)) {
+        txtInter += "En cuanto al rol asumido en los vínculos (a:p), la predominancia pasiva sugiere una tendencia a la sumisión, eludiendo responsabilidades y esperando que el entorno tome las decisiones y resuelva sus necesidades. ";
+    } else if (a > (p * 3) || p > (a * 3)) {
+        txtInter += "La gran desproporción en su rol vincular (a:p) advierte sobre una rigidez cognitiva que le resta flexibilidad para buscar pautas de conducta alternativas en sus relaciones interpersonales. ";
     }
-    if (COP < 2 && AG < 2 && PER < 2) {
-        txtInter += "En el área de relaciones interpersonales, no se registran posturas extremas de agresividad, colaboración desmedida ni rigidez vincular predominante.";
+
+    // Paso 3: Fd y SumT
+    if (Fd_Inter > 0) {
+        txtInter += "La presencia de respuestas de Comida (Fd) es infrecuente en adultos y señala fuertes conductas de dependencia, reflejando una concepción ingenua de las relaciones donde espera que los demás atiendan constantemente sus demandas. ";
     }
+    
+    if (SumT_Inter === 0) {
+        txtInter += "La ausencia de respuestas de Textura (T=0) señala cautela, distancia y la necesidad de mantener un 'espacio de seguridad', interpretando los acercamientos ajenos como invasiones. ";
+    } else if (SumT_Inter > 1) {
+        txtInter += "El exceso de respuestas de Textura (T>1) indica intensos sentimientos de soledad, privación afectiva y una búsqueda ansiosa o dependiente de contacto emocional con los demás. ";
+    } else {
+        txtInter += "La presencia normativa de respuestas de Textura (T=1) refleja una necesidad y capacidad adecuada para establecer contacto y cercanía emocional. ";
+    }
+
+    // Paso 4: Contenidos Humanos
+    const H_derecha_I = H_paren_I + Hd_I + Hd_paren_I;
+    if (H_derecha_I > H_puro_I) {
+        txtInter += "El predominio de detalles humanos o figuras de ficción ((H)+Hd+(Hd) > H pura) señala una percepción de los demás que es distante, parcializada, teñida de suspicacia o excesivamente deformada por la fantasía. ";
+    } else if (H_puro_I > H_derecha_I) {
+        txtInter += "El predominio de respuestas humanas enteras reales (H pura) indica que su visión de los otros es completa, realista y basada en la experiencia. ";
+    }
+
+    // Paso 5: GHR vs PHR
+    if (PHR_I >= GHR_I) {
+        txtInter += "El predominio de Pobres Representaciones Humanas (PHR >= GHR) señala que sus conceptualizaciones sobre las relaciones son ineficaces y sesgadas, lo que genera menor adaptabilidad y vínculos inadaptados, siendo percibido desfavorablemente por los demás. ";
+    }
+
+    // Paso 6: Interacción Pura (COP, AG y PER)
+    if (PER > 2) {
+        txtInter += "La elevada Personalización (PER > 2) refleja un autoritarismo infantil y posturas dogmáticas utilizadas para protegerse del cuestionamiento de los demás en el vínculo. ";
+    }
+
+    if (COP === 0 && AG <= 1) {
+        txtInter += "En su interacción directa, se muestra como un sujeto distante y despegado, sin interés genuino por implicarse interpersonalmente. ";
+    } else if (COP <= 1 && AG === 2) {
+        txtInter += "En sus vínculos, la agresividad es percibida como un componente natural y esperable de las relaciones (AG=2 sin cooperación significativa). ";
+    } else if (COP <= 2 && AG > 2) {
+        txtInter += "Su actividad interpersonal es coactiva y está marcada por la agresión (AG>2), vivenciando el ambiente social como sumamente hostil. ";
+    } else if (COP === 2 && AG <= 1) {
+        txtInter += "El sujeto busca activamente interacciones armoniosas, positivas y de cooperación recíproca (COP=2, baja agresión). ";
+    } else if (COP === 3 && AG === 2) {
+        txtInter += "Sus interacciones revelan que percibe tanto la amabilidad como la agresividad como componentes naturales y mezclados en el contacto con el otro. ";
+    } else if (COP > 4) {
+        txtInter += "El exceso de respuestas colaborativas (COP > 4) puede asociarse a una búsqueda constante de nuevas relaciones para suplir carencias, aumentando el riesgo de superficialidad vincular o abandono de tratamientos. ";
+    }
+
+    // Paso 7: Aislamiento (Aisl/R)
+    if (Isol > 0.33) {
+        txtInter += "El altísimo Índice de Aislamiento (Aisl/R > 0.33) indica que la persona se encuentra patológicamente aislada a nivel social, sin apenas intercambios significativos con sus semejantes. ";
+    } else if (Isol > 0.25) {
+        txtInter += "El Índice de Aislamiento (Aisl/R > 0.25) muestra que el individuo se involucra menos de lo habitual en la interacción social, evidenciando un claro retraimiento. ";
+    }
+
     txtInter += "</p>";
     clusters['Interpersonal'] = txtInter;
 
