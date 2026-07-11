@@ -1,7 +1,7 @@
-/**
- * Módulo de Interpretación Automática (Sistema Experto Zulliger/Rorschach)
- * Basado en las agrupaciones clínicas del Sistema Comprehensivo de Exner
- * Referencia: Reporte de Evaluación Psicolaboral CHESSSS.
+﻿/**
+ * MÃ³dulo de InterpretaciÃ³n AutomÃ¡tica (Sistema Experto Zulliger/Rorschach)
+ * Basado en las agrupaciones clÃ­nicas del Sistema Comprehensivo de Exner
+ * Referencia: Reporte de EvaluaciÃ³n Psicolaboral CHESSSS.
  */
 
 function obtenerValorNum(id) {
@@ -21,19 +21,19 @@ function obtenerEB() {
 }
 
 function generarInterpretacion() {
-    let reporte = "<h2 style='text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px;'>INFORME DE INTERPRETACIÓN</h2>";
+    let reporte = "<h2 style='text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px;'>INFORME DE INTERPRETACIÃ“N</h2>";
     
-    // Extracción de variables
     const [M, SumC] = obtenerEB();
+    const WSumC = obtenerValorNum('res_WSumC') || SumC; 
     const D = obtenerValorNum('res_D');
-    const AdjD = obtenerValorNum('res_AdjD') || obtenerValorNum('res_Adjes'); // Fallback to id used in summary
+    const AdjD = obtenerValorNum('res_AdjD') || obtenerValorNum('res_Adjes'); 
     const L = obtenerValorNum('res_L');
     const Afr = obtenerValorNum('res_Afr');
     const FC = obtenerValorNum('v_FC');
     const CF = obtenerValorNum('v_CF');
     const C = obtenerValorNum('v_C');
     const S = obtenerValorNum('v_S');
-    const egocentrismo = obtenerValorNum('res_3r_R');
+    const egocentrismo = obtenerValorNum('res_3r_R') || obtenerValorNum('res_3r2R'); 
     const Fr = obtenerValorNum('v_Fr');
     const rF = obtenerValorNum('v_rF');
     const MOR = obtenerValorNum('v_MOR');
@@ -43,157 +43,15 @@ function generarInterpretacion() {
     const Zf = obtenerValorNum('v_Zf');
     const XA = obtenerValorNum('res_XA');
     const WDA = obtenerValorNum('res_WDA');
-    const Xmenos = obtenerValorNum('res_Xmenos');
-    const SumPon6 = obtenerValorNum('res_SumPon6');
+    const Xmenos = obtenerValorNum('res_Xmenos') || obtenerValorNum('res_Xminus');
+    const SumPon6 = obtenerValorNum('res_SumPon6') || obtenerValorNum('res_SumPon6_ide');
+    const p = obtenerValorNum('v_p');
+    const a = obtenerValorNum('v_a');
+    const Mmenos = obtenerValorNum('v_Mmenos');
+    const Mp = obtenerValorNum('v_Mp');
+    const Ma = obtenerValorNum('v_Ma');
+    const EA = obtenerValorNum('res_EA');
 
-    // Estilos CSS para el texto
-    const pStyle = "text-align: justify; font-size: 14px; margin-bottom: 12px;";
-
-    // ----------------------------------------------------
-    // 1. SECTOR PRINCIPAL (Estilo Vivencial y Controles)
-    // ----------------------------------------------------
-    reporte += "<h3><u>Sector Principal</u></h3>";
-    reporte += `<p style="${pStyle}">`;
-    if (L > 0.99) {
-        reporte += "Con respecto al valor de Lambda, se encuentra elevado, indicando una tendencia a la sobresimplificación de la percepción y resolución de situaciones, evitando involucrarse con la complejidad del entorno. ";
-    } else if (L < 0.30 && L > 0) {
-        reporte += "Con respecto al valor de Lambda, se encuentra disminuido, indicando un sobreinvolucramiento con los estímulos y dificultad para simplificar las situaciones, lo que puede resultar en una pérdida de eficacia. ";
-    } else {
-        reporte += "Con respecto al valor de Lambda, se encuentra dentro de los valores esperables, indicando una buena capacidad para la simplificación de la percepción y resolución de la situación. ";
-    }
-
-    if (M > (SumC + 1.5)) {
-        reporte += "El estilo vivencial es definido de estilo introversivo, tendiendo a procesar la información internamente, utilizando la ideación y la reflexión antes de actuar, manteniendo las emociones en segundo plano al tomar decisiones. ";
-    } else if (SumC > (M + 1.5)) {
-        reporte += "El estilo vivencial es definido de estilo extratensivo, tendiendo a mezclar los sentimientos con sus procesos cognitivos, intercambiando con el medio y resolviendo mediante ensayo y error. ";
-    } else {
-        reporte += "El estilo vivencial es ambigual, observándose que el sujeto no cuenta con un patrón consistente a la hora de la toma de decisiones, oscilando entre la reflexión ideativa y el ensayo y error emocional. ";
-    }
-
-    if (D < 0) {
-        if (AdjD < 0) {
-            reporte += "En relación a sus recursos y tolerancia al estrés, se destaca que el sujeto presenta un estado de malestar crónico persistente frente a las demandas estimulares, dificultando el proceso de mantener y dirigir su conducta, indicando vulnerabilidad a la desorganización.";
-        } else {
-            reporte += "En relación a sus recursos, se observa un estado de sobrecarga situacional (estrés agudo) debido a demandas del entorno actual, aunque en condiciones habituales el sujeto posee una capacidad base adecuada para dirigir sus conductas.";
-        }
-    } else {
-        reporte += "Se destaca que el sujeto cuenta con los recursos suficientes para hacerle frente a las ansiedades o demandas estimulares del medio, mostrando estabilidad y buen control de la conducta.";
-    }
-    reporte += "</p>";
-
-    // ----------------------------------------------------
-    // 2. AFECTOS
-    // ----------------------------------------------------
-    reporte += "<h3><u>Afectos</u></h3>";
-    reporte += `<p style="${pStyle}">`;
-    if (FC > (CF + C)) {
-        reporte += "En la relación que existe entre sus intercambios emocionales se puede observar cómo están regidos por el control cognitivo (FC elevado), siendo cuidadoso en su expresión; utilizando la ideación como soporte para los mismos. ";
-    } else if ((CF + C) > FC) {
-        reporte += "En sus intercambios emocionales se observa un predominio de la espontaneidad y descarga directa de los afectos (CF+C predominante), con menor modulación cognitiva, lo que puede derivar en reacciones impulsivas. ";
-    }
-
-    if (Afr < 0.46) {
-        reporte += "El Índice Afectivo (Afr) se encuentra disminuido, por lo que el sujeto presenta poco interés por procesar estímulos afectivos, o una marcada tendencia a evitar la estimulación emocional o situaciones de alta carga afectiva. ";
-    } else if (Afr > 0.89) {
-        reporte += "El Índice Afectivo (Afr) se encuentra elevado, indicando una fuerte atracción y receptividad a los estímulos emocionales, pudiendo verse fácilmente desbordado por ellos. ";
-    }
-
-    if (S > 3) {
-        reporte += "Cabe destacar además que el valor de S se encuentra aumentado, indicando un fuerte patrón de oposición, clara hostilidad hacia el entorno, y baja tolerancia a la frustración.";
-    }
-    reporte += "</p>";
-
-    // ----------------------------------------------------
-    // 3. AUTOPERCEPCIÓN
-    // ----------------------------------------------------
-    reporte += "<h3><u>Autopercepción</u></h3>";
-    reporte += `<p style="${pStyle}">`;
-    if (egocentrismo < 0.33) {
-        reporte += "El índice de egocentrismo se encuentra disminuido, indicando una valoración negativa de sí mismo en comparación con los demás, lo que sugiere baja autoestima o tendencia a desestimar su propio valor. ";
-    } else if (egocentrismo > 0.44) {
-        reporte += "El índice de egocentrismo se encuentra aumentado, significando autocentramiento, tomándose a él mismo como centro de sus preocupaciones. ";
-    } else {
-        reporte += "El índice de egocentrismo se encuentra dentro del rango esperable, indicando una estimación equilibrada de su propia valía. ";
-    }
-
-    if ((Fr + rF) > 0) {
-        reporte += "Se nota además la existencia de componentes narcisistas y sobreestimación de la valía personal. ";
-    }
-
-    if (MOR >= 2) {
-        reporte += "Su autoimagen está teñida por un pesimismo que genera una visión negativa, indicando fuertes sentimientos de desvitalización o daño (MOR elevado). ";
-    }
-    reporte += "</p>";
-
-    // ----------------------------------------------------
-    // 4. INTERPERSONAL
-    // ----------------------------------------------------
-    reporte += "<h3><u>Interpersonal</u></h3>";
-    reporte += `<p style="${pStyle}">`;
-    if (COP >= 2 && AG <= 2) {
-        reporte += "Se observa una actitud general positiva y colaborativa hacia las relaciones interpersonales, percibiendo los intercambios como instancias de cooperación recíproca. ";
-    } else if (AG > 2) {
-        reporte += "Su percepción de los otros está teñida por actitudes de confrontación, percibiendo el entorno como hostil, lo que genera interacciones marcadas por la asertividad agresiva o actitud defensiva hacia los demás. ";
-    }
-
-    if (PER >= 2) {
-        reporte += "El sujeto asume una posición rígida en los vínculos interpersonales, desplegando un autoritarismo intelectual como mecanismo de defensa en el encuentro con el otro. ";
-    }
-    
-    if (COP < 2 && AG < 2 && PER < 2) {
-        reporte += "En el área de relaciones interpersonales, no se registran posturas extremas de agresividad, colaboración desmedida ni rigidez vincular predominante.";
-    }
-    reporte += "</p>";
-
-    // ----------------------------------------------------
-    // 5. PROCESADO
-    // ----------------------------------------------------
-    reporte += "<h3><u>Procesado</u></h3>";
-    reporte += `<p style="${pStyle}">`;
-    if (Zf > 12) {
-        reporte += "El valor alto de Zf destaca que el sujeto presenta un alto monto de iniciativa o motivación durante el protocolo, indicando esfuerzo de procesamiento superior al esperado, propio de autoexigencia elevada. ";
-    } else if (Zf < 9) {
-        reporte += "Se observa una baja motivación o déficit en el esfuerzo por integrar la información del entorno (Zf bajo). ";
-    } else {
-        reporte += "El esfuerzo de procesamiento y la iniciativa para integrar la información del entorno se encuentran dentro de los parámetros esperables. ";
-    }
-    reporte += "</p>";
-
-    // ----------------------------------------------------
-    // 6. MEDIACIÓN
-    // ----------------------------------------------------
-    reporte += "<h3><u>Mediación</u></h3>";
-    reporte += `<p style="${pStyle}">`;
-    if (XA < 0.70 || WDA < 0.75) {
-        reporte += "En relación con el ajuste perceptivo, se observa que es poco convencional y no acorde a lo socialmente esperado (XA% o WDA% disminuido). ";
-        if (Xmenos > 0.20) {
-            reporte += "Esto se ve agravado por un elevado grado de distorsión perceptiva (X-% aumentado), indicando un alejamiento significativo de la realidad objetiva en su mediación cognitiva. ";
-        }
-    } else {
-        reporte += "En relación con el ajuste perceptivo, el sujeto presenta una adecuada traducción de los estímulos, mostrando un enfoque convencional y un buen contacto y adaptación a la realidad objetiva. ";
-    }
-    reporte += "</p>";
-
-    // ----------------------------------------------------
-    // 6. IDEACIÓN
-    // ----------------------------------------------------
-    reporte += "<h3><u>Ideación</u></h3>";
-    reporte += `<p style="${pStyle}">`;
-    if (SumPon6 > 12) {
-        reporte += "El sujeto no presenta claridad del pensamiento, observándose fallas lógicas o deslices cognitivos severos que interfieren en la coherencia de su ideación (SumaPond6 elevada). ";
-    } else if (SumPon6 > 0 && SumPon6 <= 12) {
-        reporte += "Se presentan algunos deslices cognitivos leves o inmadurez en la articulación del pensamiento, pero sin llegar a comprometer severamente el juicio de realidad. ";
-    } else {
-        reporte += "El sujeto presenta claridad de pensamiento, con un proceso ideativo lógico, coherente y libre de interferencias formales. ";
-    }
-    reporte += "</p>";
-
-    // ----------------------------------------------------
-    // 7. CONSTELACIONES (Alertas)
-    // ----------------------------------------------------
-    reporte += "<h3><u>Constelaciones</u></h3>";
-    reporte += `<ul style="font-size: 14px; line-height: 1.6;">`;
-    
     const countChecked = (prefix, max) => {
         let count = 0;
         for (let i=0; i<=max; i++) {
@@ -203,35 +61,272 @@ function generarInterpretacion() {
         return count;
     };
 
+    const PTI = countChecked('pti', 4);
+    const DEPI = countChecked('depi', 6);
+    const CDI = countChecked('cdi', 4);
+    const SCON = countChecked('scon', 11);
+    const HVI = countChecked('hvi', 7);
+    const OBS = countChecked('obs', 4);
+
+    const pStyle = "text-align: justify; font-size: 14px; margin-bottom: 12px;";
+
+    const clusters = {};
+
+    let txtControles = "<h3><u>Controles y Tolerancia al EstrÃ©s</u></h3><p style='" + pStyle + "'>";
+    if (L > 0.99) {
+        txtControles += "Con respecto al valor de Lambda, se encuentra elevado, indicando una tendencia a la sobresimplificaciÃ³n de la percepciÃ³n y resoluciÃ³n de situaciones, evitando involucrarse con la complejidad del entorno. ";
+    } else if (L < 0.30 && L > 0) {
+        txtControles += "Con respecto al valor de Lambda, se encuentra disminuido, indicando un sobreinvolucramiento con los estÃ­mulos y dificultad para simplificar las situaciones, lo que puede resultar en una pÃ©rdida de eficacia. ";
+    } else {
+        txtControles += "Con respecto al valor de Lambda, se encuentra dentro de los valores esperables, indicando una buena capacidad para la simplificaciÃ³n de la percepciÃ³n y resoluciÃ³n de la situaciÃ³n. ";
+    }
+
+    if (M > (WSumC + 1.5)) {
+        txtControles += "El estilo vivencial es definido de estilo introversivo, tendiendo a procesar la informaciÃ³n internamente, utilizando la ideaciÃ³n y la reflexiÃ³n antes de actuar, manteniendo las emociones en segundo plano al tomar decisiones. ";
+    } else if (WSumC > (M + 1.5)) {
+        txtControles += "El estilo vivencial es definido de estilo extratensivo, tendiendo a mezclar los sentimientos con sus procesos cognitivos, intercambiando con el medio y resolviendo mediante ensayo y error. ";
+    } else {
+        txtControles += "El estilo vivencial es ambigual, observÃ¡ndose que el sujeto no cuenta con un patrÃ³n consistente a la hora de la toma de decisiones, oscilando entre la reflexiÃ³n ideativa y el ensayo y error emocional. ";
+    }
+
+    if (D < 0) {
+        if (AdjD < 0) {
+            txtControles += "En relaciÃ³n a sus recursos y tolerancia al estrÃ©s, se destaca que el sujeto presenta un estado de malestar crÃ³nico persistente frente a las demandas estimulares, dificultando el proceso de mantener y dirigir su conducta, indicando vulnerabilidad a la desorganizaciÃ³n.";
+        } else {
+            txtControles += "En relaciÃ³n a sus recursos, se observa un estado de sobrecarga situacional (estrÃ©s agudo) debido a demandas del entorno actual, aunque en condiciones habituales el sujeto posee una capacidad base adecuada para dirigir sus conductas.";
+        }
+    } else {
+        txtControles += "Se destaca que el sujeto cuenta con los recursos suficientes para hacerle frente a las ansiedades o demandas estimulares del medio, mostrando estabilidad y buen control de la conducta.";
+    }
+    txtControles += "</p>";
+    clusters['Controles'] = txtControles;
+
+    let txtAfectos = "<h3><u>Afectos</u></h3><p style='" + pStyle + "'>";
+    if (FC > (CF + C)) {
+        txtAfectos += "En la relaciÃ³n que existe entre sus intercambios emocionales se puede observar cÃ³mo estÃ¡n regidos por el control cognitivo (FC elevado), siendo cuidadoso en su expresiÃ³n; utilizando la ideaciÃ³n como soporte para los mismos. ";
+    } else if ((CF + C) > FC) {
+        txtAfectos += "En sus intercambios emocionales se observa un predominio de la espontaneidad y descarga directa de los afectos (CF+C predominante), con menor modulaciÃ³n cognitiva, lo que puede derivar en reacciones impulsivas. ";
+    }
+
+    if (Afr < 0.46) {
+        txtAfectos += "El Ãndice Afectivo (Afr) se encuentra disminuido, por lo que el sujeto presenta poco interÃ©s por procesar estÃ­mulos afectivos, o una marcada tendencia a evitar la estimulaciÃ³n emocional o situaciones de alta carga afectiva. ";
+    } else if (Afr > 0.89) {
+        txtAfectos += "El Ãndice Afectivo (Afr) se encuentra elevado, indicando una fuerte atracciÃ³n y receptividad a los estÃ­mulos emocionales, pudiendo verse fÃ¡cilmente desbordado por ellos. ";
+    }
+
+    if (S > 3) {
+        txtAfectos += "Cabe destacar ademÃ¡s que el valor de S se encuentra aumentado, indicando un fuerte patrÃ³n de oposiciÃ³n, clara hostilidad hacia el entorno, y baja tolerancia a la frustraciÃ³n.";
+    }
+    txtAfectos += "</p>";
+    clusters['Afectos'] = txtAfectos;
+
+    let txtAuto = "<h3><u>AutopercepciÃ³n</u></h3><p style='" + pStyle + "'>";
+    if (egocentrismo < 0.33) {
+        txtAuto += "El Ã­ndice de egocentrismo se encuentra disminuido, indicando una valoraciÃ³n negativa de sÃ­ mismo en comparaciÃ³n con los demÃ¡s, lo que sugiere baja autoestima o tendencia a desestimar su propio valor. ";
+    } else if (egocentrismo > 0.44) {
+        txtAuto += "El Ã­ndice de egocentrismo se encuentra aumentado, significando autocentramiento, tomÃ¡ndose a Ã©l mismo como centro de sus preocupaciones. ";
+    } else {
+        txtAuto += "El Ã­ndice de egocentrismo se encuentra dentro del rango esperable, indicando una estimaciÃ³n equilibrada de su propia valÃ­a. ";
+    }
+
+    if ((Fr + rF) > 0) {
+        txtAuto += "Se nota ademÃ¡s la existencia de componentes narcisistas y sobreestimaciÃ³n de la valÃ­a personal. ";
+    }
+
+    if (MOR >= 2) {
+        txtAuto += "Su autoimagen estÃ¡ teÃ±ida por un pesimismo que genera una visiÃ³n negativa, indicando fuertes sentimientos de desvitalizaciÃ³n o daÃ±o (MOR elevado). ";
+    }
+    txtAuto += "</p>";
+    clusters['Autopercepcion'] = txtAuto;
+
+    let txtInter = "<h3><u>PercepciÃ³n Interpersonal</u></h3><p style='" + pStyle + "'>";
+    if (COP >= 2 && AG <= 2) {
+        txtInter += "Se observa una actitud general positiva y colaborativa hacia las relaciones interpersonales, percibiendo los intercambios como instancias de cooperaciÃ³n recÃ­proca. ";
+    } else if (AG > 2) {
+        txtInter += "Su percepciÃ³n de los otros estÃ¡ teÃ±ida por actitudes de confrontaciÃ³n, percibiendo el entorno como hostil, lo que genera interacciones marcadas por la asertividad agresiva o actitud defensiva hacia los demÃ¡s. ";
+    }
+
+    if (PER >= 2) {
+        txtInter += "El sujeto asume una posiciÃ³n rÃ­gida en los vÃ­nculos interpersonales, desplegando un autoritarismo intelectual como mecanismo de defensa en el encuentro con el otro. ";
+    }
+    if (COP < 2 && AG < 2 && PER < 2) {
+        txtInter += "En el Ã¡rea de relaciones interpersonales, no se registran posturas extremas de agresividad, colaboraciÃ³n desmedida ni rigidez vincular predominante.";
+    }
+    txtInter += "</p>";
+    clusters['Interpersonal'] = txtInter;
+
+    let txtProc = "<h3><u>Procesamiento</u></h3><p style='" + pStyle + "'>";
+    if (Zf > 12) {
+        txtProc += "El valor alto de Zf destaca que el sujeto presenta un alto monto de iniciativa o motivaciÃ³n durante el protocolo, indicando esfuerzo de procesamiento superior al esperado, propio de autoexigencia elevada. ";
+    } else if (Zf < 9) {
+        txtProc += "Se observa una baja motivaciÃ³n o dÃ©ficit en el esfuerzo por integrar la informaciÃ³n del entorno (Zf bajo). ";
+    } else {
+        txtProc += "El esfuerzo de procesamiento y la iniciativa para integrar la informaciÃ³n del entorno se encuentran dentro de los parÃ¡metros esperables. ";
+    }
+    txtProc += "</p>";
+    clusters['Procesamiento'] = txtProc;
+
+    let txtMed = "<h3><u>MediaciÃ³n</u></h3><p style='" + pStyle + "'>";
+    if (XA < 0.70 || WDA < 0.75) {
+        txtMed += "En relaciÃ³n con el ajuste perceptivo, se observa que es poco convencional y no acorde a lo socialmente esperado (XA% o WDA% disminuido). ";
+        if (Xmenos > 0.20) {
+            txtMed += "Esto se ve agravado por un elevado grado de distorsiÃ³n perceptiva (X-% aumentado), indicando un alejamiento significativo de la realidad objetiva en su mediaciÃ³n cognitiva. ";
+        }
+    } else {
+        txtMed += "En relaciÃ³n con el ajuste perceptivo, el sujeto presenta una adecuada traducciÃ³n de los estÃ­mulos, mostrando un enfoque convencional y un buen contacto y adaptaciÃ³n a la realidad objetiva. ";
+    }
+    txtMed += "</p>";
+    clusters['Mediacion'] = txtMed;
+
+    let txtIde = "<h3><u>IdeaciÃ³n</u></h3><p style='" + pStyle + "'>";
+    if (SumPon6 > 12) {
+        txtIde += "El sujeto no presenta claridad del pensamiento, observÃ¡ndose fallas lÃ³gicas o deslices cognitivos severos que interfieren en la coherencia de su ideaciÃ³n (SumaPond6 elevada). ";
+    } else if (SumPon6 > 0 && SumPon6 <= 12) {
+        txtIde += "Se presentan algunos deslices cognitivos leves o inmadurez en la articulaciÃ³n del pensamiento, pero sin llegar a comprometer severamente el juicio de realidad. ";
+    } else {
+        txtIde += "El sujeto presenta claridad de pensamiento, con un proceso ideativo lÃ³gico, coherente y libre de interferencias formales. ";
+    }
+    txtIde += "</p>";
+    clusters['Ideacion'] = txtIde;
+
+    let ordenInterpretacion = [];
+    let claveUsada = "";
+
+    function agregarClusters(lista) {
+        lista.forEach(c => {
+            if (!ordenInterpretacion.includes(c)) {
+                ordenInterpretacion.push(c);
+            }
+        });
+    }
+
+    if (PTI >= 3) {
+        claveUsada += "PTI > 3 ";
+        agregarClusters(['Ideacion', 'Mediacion', 'Procesamiento', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
+    }
+    else if (DEPI >= 5 && CDI >= 4) {
+        claveUsada += "DEPI > 5 y CDI > 3 ";
+        agregarClusters(['Interpersonal', 'Autopercepcion', 'Controles', 'Afectos', 'Procesamiento', 'Mediacion', 'Ideacion']);
+    }
+    else if (DEPI >= 5) {
+        claveUsada += "DEPI > 5 ";
+        agregarClusters(['Afectos', 'Controles', 'Autopercepcion', 'Interpersonal', 'Procesamiento', 'Mediacion', 'Ideacion']);
+    }
+    else {
+        let encontroConcatenada = false;
+        
+        if (D < AdjD) {
+            claveUsada += "D < Adj D ";
+            agregarClusters(['Controles']);
+        }
+        
+        if (!encontroConcatenada && CDI >= 4) {
+            claveUsada += (claveUsada ? " / " : "") + "CDI > 3 ";
+            agregarClusters(['Controles', 'Afectos', 'Autopercepcion', 'Interpersonal', 'Procesamiento', 'Mediacion', 'Ideacion']);
+            encontroConcatenada = true;
+        }
+        
+        if (!encontroConcatenada && AdjD < 0) {
+            if (!claveUsada.includes("Adj D < 0")) claveUsada += (claveUsada ? " / " : "") + "Adj D < 0 ";
+            agregarClusters(['Controles']);
+        }
+        
+        if (!encontroConcatenada && L > 0.99) {
+            claveUsada += (claveUsada ? " / " : "") + "Lambda > 0.99 ";
+            agregarClusters(['Procesamiento', 'Mediacion', 'Ideacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
+            encontroConcatenada = true;
+        }
+        
+        if (!encontroConcatenada && (Fr + rF) > 0) {
+            claveUsada += (claveUsada ? " / " : "") + "Fr+rF > 0 ";
+            agregarClusters(['Autopercepcion', 'Interpersonal']);
+        }
+        
+        if (!encontroConcatenada && M > WSumC) {
+            claveUsada += (claveUsada ? " / " : "") + "Estilo Introversivo ";
+            agregarClusters(['Ideacion', 'Procesamiento', 'Mediacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
+            encontroConcatenada = true;
+        }
+        
+        if (!encontroConcatenada && WSumC > M) {
+            claveUsada += (claveUsada ? " / " : "") + "Estilo Extratensivo ";
+            agregarClusters(['Afectos', 'Autopercepcion', 'Interpersonal', 'Controles', 'Procesamiento', 'Mediacion', 'Ideacion']);
+            encontroConcatenada = true;
+        }
+        
+        if (!encontroConcatenada && p > (a + 1)) {
+            claveUsada += (claveUsada ? " / " : "") + "p > a+1 ";
+            agregarClusters(['Ideacion', 'Procesamiento', 'Mediacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
+            encontroConcatenada = true;
+        }
+        
+        if (!encontroConcatenada && HVI >= 4) {
+            claveUsada += (claveUsada ? " / " : "") + "HVI Positivo ";
+            agregarClusters(['Ideacion', 'Procesamiento', 'Mediacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
+            encontroConcatenada = true;
+        }
+
+        if (ordenInterpretacion.length < 7) {
+            if (OBS >= 3) {
+                claveUsada += (claveUsada ? " / " : "") + "Terciaria: OBS Positivo ";
+                agregarClusters(['Procesamiento', 'Mediacion', 'Ideacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
+            } else if (DEPI === 5) {
+                claveUsada += (claveUsada ? " / " : "") + "Terciaria: DEPI = 5 ";
+                agregarClusters(['Afectos', 'Controles', 'Autopercepcion', 'Interpersonal', 'Procesamiento', 'Mediacion', 'Ideacion']);
+            } else if (EA > 12) {
+                claveUsada += (claveUsada ? " / " : "") + "Terciaria: EA > 12 ";
+                agregarClusters(['Controles', 'Ideacion', 'Procesamiento', 'Mediacion', 'Afectos', 'Autopercepcion', 'Interpersonal']);
+            } else if (Mmenos > 0 || Mp > Ma || SumPon6 > 5) {
+                claveUsada += (claveUsada ? " / " : "") + "Terciaria: Indicadores Ideativos ";
+                agregarClusters(['Ideacion', 'Procesamiento', 'Mediacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
+            } else {
+                claveUsada += (claveUsada ? " / " : "") + "Protocolo EstÃ¡ndar (Sin claves crÃ­ticas)";
+                agregarClusters(['Controles', 'Afectos', 'Autopercepcion', 'Interpersonal', 'Procesamiento', 'Mediacion', 'Ideacion']);
+            }
+        }
+    }
+
+    reporte += `<div style="background-color:#fef3c7; padding: 10px; border-left: 4px solid #f59e0b; margin-bottom: 20px;">
+        <strong>Clave de interpretaciÃ³n:</strong> ${claveUsada}
+    </div>`;
+
+    ordenInterpretacion.forEach(nombreCluster => {
+        if (clusters[nombreCluster]) {
+            reporte += clusters[nombreCluster];
+        }
+    });
+
+    reporte += "<h3><u>Constelaciones (Alertas)</u></h3>";
+    reporte += `<ul style="font-size: 14px; line-height: 1.6;">`;
     let constelacionesActivas = false;
     
-    if (countChecked('pti', 4) >= 3) {
-        reporte += "<li><b>Índice de Trastorno del Pensamiento (PTI):</b> Positivo. Indica distorsión perceptiva severa y problemas en el juicio de realidad.</li>";
+    if (PTI >= 3) {
+        reporte += "<li><b>Ãndice de Trastorno del Pensamiento (PTI):</b> Positivo. Indica distorsiÃ³n perceptiva severa y problemas en el juicio de realidad.</li>";
         constelacionesActivas = true;
     }
-    if (countChecked('depi', 6) >= 5) {
-        reporte += "<li><b>Índice de Depresión (DEPI):</b> Positivo. El sujeto está experimentando una seria perturbación del estado del ánimo, caracterizado por un abatimiento anímico.</li>";
+    if (DEPI >= 5) {
+        reporte += "<li><b>Ãndice de DepresiÃ³n (DEPI):</b> Positivo. El sujeto estÃ¡ experimentando una seria perturbaciÃ³n del estado del Ã¡nimo, caracterizado por un abatimiento anÃ­mico.</li>";
         constelacionesActivas = true;
     }
-    if (countChecked('cdi', 4) >= 4) {
-        reporte += "<li><b>Índice de Déficit de Afrontamiento (CDI):</b> Positivo. Dificultades crónicas para lidiar con las demandas y déficit en habilidades sociales.</li>";
+    if (CDI >= 4) {
+        reporte += "<li><b>Ãndice de DÃ©ficit de Afrontamiento (CDI):</b> Positivo. Dificultades crÃ³nicas para lidiar con las demandas y dÃ©ficit en habilidades sociales.</li>";
         constelacionesActivas = true;
     }
-    if (countChecked('scon', 11) >= 8) {
-        reporte += "<li><b>Constelación de Suicidio (S-CON):</b> Positivo. Indica potencial riesgo autodestructivo inminente (ALERTA).</li>";
+    if (SCON >= 8) {
+        reporte += "<li><b>ConstelaciÃ³n de Suicidio (S-CON):</b> Positivo. Indica potencial riesgo autodestructivo inminente (ALERTA).</li>";
         constelacionesActivas = true;
     }
-    if (countChecked('hvi', 7) >= 4) {
-        reporte += "<li><b>Índice de Hipervigilancia (HVI):</b> Positivo. Indicando estado de alerta continua y mantenimiento de una actitud de recelo y desconfianza hacia su entorno.</li>";
+    if (HVI >= 4) {
+        reporte += "<li><b>Ãndice de Hipervigilancia (HVI):</b> Positivo. Indicando estado de alerta continua y mantenimiento de una actitud de recelo y desconfianza hacia su entorno.</li>";
         constelacionesActivas = true;
     }
-    if (countChecked('obs', 4) >= 3) {
-        reporte += "<li><b>Índice de Estilo Obsesivo (OBS):</b> Positivo. Marcado perfeccionismo y necesidad de control.</li>";
+    if (OBS >= 3) {
+        reporte += "<li><b>Ãndice de Estilo Obsesivo (OBS):</b> Positivo. Marcado perfeccionismo y necesidad de control.</li>";
         constelacionesActivas = true;
     }
 
     if (!constelacionesActivas) {
-        reporte += "<li><i>El protocolo no presenta puntuaciones positivas críticas en las constelaciones evaluadas.</i></li>";
+        reporte += "<li><i>El protocolo no presenta puntuaciones positivas crÃ­ticas en las constelaciones evaluadas.</i></li>";
     }
     reporte += "</ul>";
 
@@ -266,7 +361,7 @@ function copiarInterpretacion() {
     tempDiv.innerHTML = contenido.innerHTML;
     
     navigator.clipboard.writeText(tempDiv.innerText).then(() => {
-        alert("¡Informe copiado al portapapeles! Ya podés pegarlo en tu Word.");
+        alert("Â¡Informe copiado al portapapeles! Ya podÃ©s pegarlo en tu Word.");
     }).catch(err => {
         alert("Error al copiar: " + err);
     });
