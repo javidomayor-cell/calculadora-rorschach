@@ -249,21 +249,77 @@ function generarInterpretacion() {
     clusters['Afectos'] = txtAfectos;
 
     let txtAuto = "<h3><u>Autopercepción</u></h3><p style='" + pStyle + "'>";
-    if (egocentrismo < 0.33) {
-        txtAuto += "El índice de egocentrismo se encuentra disminuido, indicando una valoración negativa de sí mismo en comparación con los demás, lo que sugiere baja autoestima o tendencia a desestimar su propio valor. ";
-    } else if (egocentrismo > 0.44) {
-        txtAuto += "El índice de egocentrismo se encuentra aumentado, significando autocentramiento, tomándose a él mismo como centro de sus preocupaciones. ";
+
+    // Variables adicionales
+    const sumFrrF = Fr + rF;
+    const SumV_AP = obtenerValorNum('res_SumV');
+    const FD_AP = obtenerValorNum('v_FD');
+    const AnXy = obtenerValorNum('res_AnXy') || (obtenerValorNum('v_An') + obtenerValorNum('v_Xy'));
+    const Xy = obtenerValorNum('v_Xy');
+    const H_puro = obtenerValorNum('v_H');
+    const H_paren = obtenerValorNum('v_Hparen');
+    const Hd = obtenerValorNum('v_Hd');
+    const Hd_paren = obtenerValorNum('v_Hdparen');
+    const GHR = obtenerValorNum('v_GHR');
+    const PHR = obtenerValorNum('v_PHR');
+
+    // Paso 1: OBS e HVI
+    if (OBS > 0) {
+        txtAuto += "Se observa un Índice Obsesivo (OBS) positivo, indicando una marcada tendencia a la meticulosidad, cautela y perfeccionismo, lo que genera una autoevaluación sumamente rígida y exigente. ";
+    }
+    if (HVI > 0) {
+        txtAuto += "La presencia de un Índice de Hipervigilancia (HVI) positivo señala un estado continuo de alerta y desconfianza, afectando su autopercepción al mantenerlo excesivamente a la defensiva para proteger su integridad. ";
+    }
+
+    // Paso 2: Narcisismo (Fr+rF)
+    if (sumFrrF > 0) {
+        txtAuto += "La presencia de respuestas de Reflejo (Fr+rF=" + sumFrrF + ") revela una acusada tendencia a sobreestimar su propia valía (autoglorificación), apoyándose en una modalidad de autopercepción primitiva y narcisista que utiliza la externalización para no reconocer limitaciones. ";
+    }
+
+    // Paso 3: Egocentrismo
+    if (egocentrismo > 0.44) {
+        txtAuto += "El índice de egocentrismo se encuentra elevado, reflejando que el sujeto tiende a centrarse en sí mismo más de lo habitual, tomándose como el foco principal de su atención. ";
+        if (SumV_AP > 0 || MOR > 2) {
+            txtAuto += "Sin embargo, dada la presencia de indicadores de dolor psíquico (V) o daño (MOR), este autocentramiento no equivale a una alta autoestima, sino a una focalización en sus propios padecimientos y desvalorización. ";
+        }
+    } else if (egocentrismo < 0.33) {
+        txtAuto += "El índice de egocentrismo se encuentra disminuido, indicando una tendencia a compararse negativamente con los demás, sugiriendo baja autoestima y desestimación de su propia valía (frecuente en perfiles depresivos). ";
     } else {
-        txtAuto += "El índice de egocentrismo se encuentra dentro del rango esperable, indicando una estimación equilibrada de su propia valía. ";
+        txtAuto += "El índice de egocentrismo se ubica dentro del rango esperable, sugiriendo una estimación equilibrada de su preocupación por sí mismo en relación con los demás. ";
     }
 
-    if ((Fr + rF) > 0) {
-        txtAuto += "Se nota además la existencia de componentes narcisistas y sobreestimación de la valía personal. ";
+    // Paso 4: Introspección (FD y V)
+    if (SumV_AP > 0) {
+        txtAuto += "En cuanto a su capacidad de autoexamen, el uso de introspección se encuentra teñido de autocrítica negativa (V=" + SumV_AP + "), señalando fuertes sentimientos crónicos de culpa, vergüenza, desvalorización y baja autoestima. ";
+    } else if (FD_AP > 2) {
+        txtAuto += "Se observa una capacidad de tomar distancia para el autoexamen (FD=" + FD_AP + "), pero su exceso indica que el sujeto dedica un esfuerzo desmedido a la autoinspección, con el riesgo de aislarse de su entorno. ";
+    } else if (FD_AP > 0) {
+        txtAuto += "El sujeto posee una adecuada capacidad para tomar distancia y adquirir perspectiva para el autoexamen sin tintes dolorosos (presencia de FD). ";
     }
 
+    // Paso 5: Preocupación Corporal (An+Xy)
+    if (AnXy > 3) {
+        txtAuto += "El elevado número de contenidos anatómicos y radiografías (An+Xy=" + AnXy + ") refleja una preocupante distorsión de la autoimagen, marcada por una extrema vulnerabilidad corporal y posible ideación hipocondríaca o psicosomática. ";
+        if (Xy > 0) txtAuto += "La presencia específica de radiografías (Xy) añade un matiz de dolor y exposición descarnada a esta preocupación corporal. ";
+    }
+
+    // Paso 6: Autoimagen Dañada (MOR)
     if (MOR >= 2) {
-        txtAuto += "Su autoimagen está teñida por un pesimismo que genera una visión negativa, indicando fuertes sentimientos de desvitalización o daño (MOR elevado). ";
+        txtAuto += "Su autoimagen está severamente teñida por atribuciones displacenteras (MOR=" + MOR + "), indicando una orientación pesimista y desvalorizada donde el sujeto se percibe a sí mismo con rasgos rotos, arruinados o dañados. ";
     }
+
+    // Paso 7: H:(H)+Hd+(Hd) y GHR:PHR
+    const H_derecha = H_paren + Hd + Hd_paren;
+    if (H_derecha > H_puro) {
+        txtAuto += "Al comparar las percepciones humanas, predomina la imagen construida sobre figuras irreales, parciales o fantasiosas (H pura < (H)+Hd+(Hd)), lo que indica que su autoimagen se basa en sesgos inmaduros, apartándose de los datos de la realidad. ";
+    } else if (H_puro > 0) {
+        txtAuto += "La predominancia de representaciones humanas enteras y reales (H pura) sugiere que su autoimagen está construida principalmente sobre la base de la realidad objetiva y la identificación madura. ";
+    }
+
+    if (PHR > GHR) {
+        txtAuto += "Por último, el predominio de Pobres Representaciones Humanas (PHR > GHR) confirma que las conceptualizaciones del sujeto acerca de sí mismo son ineficaces, poco realistas y contienen fuertes sesgos distorsionadores. ";
+    }
+
     txtAuto += "</p>";
     clusters['Autopercepcion'] = txtAuto;
 
