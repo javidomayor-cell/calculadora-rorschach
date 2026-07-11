@@ -410,37 +410,96 @@ function generarInterpretacion() {
     txtInter += "</p>";
     clusters['Interpersonal'] = txtInter;
 
+    // --- TRIADA COGNITIVA ---
+    // Variables adicionales requeridas
+    const Zf_val = obtenerValorNum('v_Zf');
+    const Zd_val = obtenerValorNum('res_Zd');
+    const W_val = obtenerValorNum('v_W');
+    const PSV_val = obtenerValorNum('v_PSV');
+    const P_val = obtenerValorNum('v_P');
+    const Xplus_val = obtenerValorNum('res_Xplus');
+    const Xu_val = obtenerValorNum('res_Xu');
+    const SumPon6_val = obtenerValorNum('res_SumPon6_ide') || obtenerValorNum('res_SumPon6');
+    const Sum2AB_val = obtenerValorNum('res_2AB');
+
+    // 1. PROCESAMIENTO
     let txtProc = "<h3><u>Procesamiento</u></h3><p style='" + pStyle + "'>";
-    if (Zf > 12) {
-        txtProc += "El valor alto de Zf destaca que el sujeto presenta un alto monto de iniciativa o motivación durante el protocolo, indicando esfuerzo de procesamiento superior al esperado, propio de autoexigencia elevada. ";
-    } else if (Zf < 9) {
-        txtProc += "Se observa una baja motivación o déficit en el esfuerzo por integrar la información del entorno (Zf bajo). ";
+    
+    if (Zf_val > 13) {
+        txtProc += "En cuanto al esfuerzo organizativo, se observa un alto grado de motivación y dedicación a la tarea (Zf aumentado). Sin embargo, este exceso advierte sobre perfeccionismo, autoexigencia o temor a desorganizarse. ";
+    } else if (Zf_val < 9) {
+        txtProc += "El nivel de esfuerzo organizativo es exiguo (Zf disminuido), apuntando a falta de iniciativa o motivación, por lo que el sujeto invierte pocos esfuerzos en integrar la información. ";
     } else {
-        txtProc += "El esfuerzo de procesamiento y la iniciativa para integrar la información del entorno se encuentran dentro de los parámetros esperables. ";
+        txtProc += "El esfuerzo de procesamiento y la iniciativa para integrar la información del entorno se encuentran dentro de los parámetros esperables (Zf convencional). ";
+    }
+
+    if (Zd_val > 3.5) {
+        txtProc += "La eficacia de su procesamiento revela un estilo hiperincorporador (Zd > +3.5), donde gasta más energía de la necesaria analizando meticulosamente los detalles antes de decidir ('rumia' la información por perfeccionismo). ";
+    } else if (Zd_val < -3.5) {
+        txtProc += "Su rastreo de datos es apresurado e hipoincorporador (Zd < -3.5). Decide de manera irreflexiva y descuidada, omitiendo información clave (impulsividad cognitiva). ";
+    }
+
+    if (W_val > (M * 2 + 2)) {
+        txtProc += "Su índice de aspiraciones (W:M) muestra una notoria desproporción: el sujeto se impone metas y exigencias muy por encima de sus disponibilidades funcionales reales, con alta probabilidad de frustración. ";
+    }
+
+    if (PSV_val > 0) {
+        txtProc += "La presencia de perseveraciones (PSV > 0) indica un deterioro en la agilidad y flexibilidad cognitiva, reflejando estancamiento en un mismo esquema por bloqueo emocional o neurológico. ";
     }
     txtProc += "</p>";
     clusters['Procesamiento'] = txtProc;
 
+    // 2. MEDIACION
     let txtMed = "<h3><u>Mediación</u></h3><p style='" + pStyle + "'>";
-    if (XA < 0.70 || WDA < 0.75) {
-        txtMed += "En relación con el ajuste perceptivo, se observa que es poco convencional y no acorde a lo socialmente esperado (XA% o WDA% disminuido). ";
+    
+    if (XA > 0.90 || WDA > 0.90) {
+        txtMed += "En cuanto a la prueba de realidad, presenta un ajuste hiperconvencional (XA% o WDA% elevados). Es sumamente perfeccionista y esclavo de las demandas externas, sacrificando su originalidad por miedo a equivocarse. ";
+    } else if (XA < 0.78 || WDA < 0.78) {
+        txtMed += "En relación con el ajuste perceptivo, se observa que es poco convencional (XA% o WDA% disminuido). ";
         if (Xmenos > 0.20) {
-            txtMed += "Esto se ve agravado por un elevado grado de distorsión perceptiva (X-% aumentado), indicando un alejamiento significativo de la realidad objetiva en su mediación cognitiva. ";
+            txtMed += "Esto se ve agravado severamente por un elevado grado de distorsión pura (X-% > 20%), indicando un grave apartamiento de la realidad, violando groseramente los contornos objetivos, lo que dificulta su adaptación al entorno. ";
         }
     } else {
-        txtMed += "En relación con el ajuste perceptivo, el sujeto presenta una adecuada traducción de los estímulos, mostrando un enfoque convencional y un buen contacto y adaptación a la realidad objetiva. ";
+        txtMed += "El sujeto presenta una adecuada traducción de los estímulos (XA% y WDA% esperables), mostrando un buen contacto y adaptación a la realidad objetiva. ";
+    }
+
+    if (P_val > 7) {
+        txtMed += "La elevada frecuencia de respuestas Populares refleja sumisión excesiva a la norma o un esfuerzo defensivo por evitar mostrar su individualidad. ";
+    } else if (P_val < 4) {
+        txtMed += "La escasez de respuestas Populares indica incapacidad o renuncia a ver lo obvio, distanciándose del sentido común colectivo. ";
+    }
+
+    if (Xu_val > 0.25 && Xplus_val < 0.60) {
+        txtMed += "Presenta además un alto grado de Forma Única (Xu%) a expensas de la forma convencional, indicando un excesivo autocentramiento y tendencia a observar el entorno únicamente desde su propio punto de vista individualista. ";
     }
     txtMed += "</p>";
     clusters['Mediacion'] = txtMed;
 
+    // 3. IDEACION
     let txtIde = "<h3><u>Ideación</u></h3><p style='" + pStyle + "'>";
-    if (SumPon6 > 12) {
-        txtIde += "El sujeto no presenta claridad del pensamiento, observándose fallas lógicas o deslices cognitivos severos que interfieren en la coherencia de su ideación (SumaPond6 elevada). ";
-    } else if (SumPon6 > 0 && SumPon6 <= 12) {
+    
+    if (p > (a + 1)) {
+        txtIde += "En su flexibilidad ideativa (a:p), el sujeto asume un rol pasivo-dependiente, eludiendo responsabilidades y tendiendo a refugiarse en la fantasía para satisfacer sus necesidades. ";
+    } else if ((a >= 4 || p >= 4) && (a === 0 || p === 0 || a > p * 3 || p > a * 3)) {
+        txtIde += "Existe una gran desproporción en su actividad ideativa, señalando rigidez cognitiva, pensamiento dogmático y dificultad para aceptar puntos de vista ajenos. ";
+    }
+
+    if (Mp > Ma) {
+        txtIde += "En su pensamiento deliberado (Ma:Mp), tiende a sustituir la realidad por la fantasía en situaciones estresantes, operando como un mecanismo de evitación e indefensión aprendida. ";
+    }
+
+    if (SumPon6_val > 12) {
+        txtIde += "¡ALERTA CRÍTICA!: Se observan fallas lógicas y deslices cognitivos severos (SumaPond6 elevada) que advierten sobre una disfunción grave del pensamiento, fracaso del juicio o ideación impulsiva y desorganizada. ";
+    } else if (SumPon6_val > 0) {
         txtIde += "Se presentan algunos deslices cognitivos leves o inmadurez en la articulación del pensamiento, pero sin llegar a comprometer severamente el juicio de realidad. ";
     } else {
         txtIde += "El sujeto presenta claridad de pensamiento, con un proceso ideativo lógico, coherente y libre de interferencias formales. ";
     }
+
+    if (Sum2AB_val > 3) {
+        txtIde += "Finalmente, se destaca el uso excesivo de mecanismos pseudointelectuales (racionalizaciones) para intentar neutralizar y desmentir el impacto de afectos dolorosos, distorsionando el significado real de las situaciones. ";
+    }
+    
     txtIde += "</p>";
     clusters['Ideacion'] = txtIde;
 
