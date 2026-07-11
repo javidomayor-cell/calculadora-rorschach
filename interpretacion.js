@@ -644,6 +644,8 @@ function generarInterpretacion() {
     }
     reporte += "</ul>";
 
+    reporte += "<div style='margin-top:30px; padding:10px; font-size:12px; color:#555; background-color:#f1f5f9; border:1px solid #cbd5e1; border-radius:4px;'><b>Aviso Legal y Ético:</b> Este informe ha sido generado automáticamente basándose en los algoritmos estadísticos del Sistema Comprehensivo de Exner. Los resultados constituyen hipótesis de trabajo y no un diagnóstico definitivo. La integración final y validez del diagnóstico recae exclusivamente en el juicio clínico del psicólogo evaluador.</div>";
+
     return reporte;
 }
 function mostrarModalInterpretacion() {
