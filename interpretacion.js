@@ -72,32 +72,93 @@ function generarInterpretacion() {
 
     const clusters = {};
 
-    let txtControles = "<h3><u>Controles y Tolerancia al Estrés</u></h3><p style='" + pStyle + "'>";
-    if (L > 0.99) {
-        txtControles += "Con respecto al valor de Lambda, se encuentra elevado, indicando una tendencia a la sobresimplificación de la percepción y resolución de situaciones, evitando involucrarse con la complejidad del entorno. ";
-    } else if (L < 0.30 && L > 0) {
-        txtControles += "Con respecto al valor de Lambda, se encuentra disminuido, indicando un sobreinvolucramiento con los estímulos y dificultad para simplificar las situaciones, lo que puede resultar en una pérdida de eficacia. ";
+    let txtControles = "<h3><u>Controles y Tolerancia al Estrés (Sector Principal)</u></h3><p style='" + pStyle + "'>";
+
+    // Extraer variables adicionales necesarias
+    const FM = obtenerValorNum('res_FM_princ') || obtenerValorNum('res_FM');
+    const m = obtenerValorNum('res_m_princ') || obtenerValorNum('res_m');
+    const eb_right = (obtenerValorNum('res_SumCprime') || 0) + (obtenerValorNum('res_SumT') || 0) + (obtenerValorNum('res_SumV') || 0) + (obtenerValorNum('res_SumY') || 0);
+    const eb_left = FM + m;
+    const SumT_C = obtenerValorNum('res_SumT');
+    const SumV_C = obtenerValorNum('res_SumV');
+    const SumY_C = obtenerValorNum('res_SumY');
+    const EBPerText_C = document.getElementById('res_EBPer') ? document.getElementById('res_EBPer').innerText : "N/A";
+
+    txtControles += "<strong>Sector Central I: Funcionamiento Habitual</strong><br>";
+
+    // Paso 1: Adj D y CDI
+    if (AdjD > 0) {
+        txtControles += "El valor de Adj D (" + AdjD + ") indica una capacidad de control y tolerancia al estrés superior a lo común en condiciones habituales. ";
+        if (EA < 6) txtControles += "No obstante, al presentar una Experiencia Accesible (EA) baja, esta solidez podría ser engañosa frente a demandas complejas. ";
+    } else if (AdjD < 0) {
+        txtControles += "El valor negativo de Adj D (" + AdjD + ") señala una capacidad de control habitual disminuida, recursos crónicos insuficientes y vulnerabilidad a la desorganización frente a las demandas del entorno. ";
     } else {
-        txtControles += "Con respecto al valor de Lambda, se encuentra dentro de los valores esperables, indicando una buena capacidad para la simplificación de la percepción y resolución de la situación. ";
+        txtControles += "El valor de Adj D se encuentra dentro de lo esperado (0), indicando una capacidad de control adecuada para mantener la dirección de sus conductas en condiciones habituales. ";
+    }
+    
+    if (CDI >= 4) {
+        txtControles += "Asimismo, el Índice de Inhabilidad Social (CDI) positivo revela inmadurez en el manejo de situaciones socioafectivas, incrementando el riesgo de desorganización si el entorno se complejiza. ";
     }
 
+    // Paso 2: EA
+    if (EA < 6) {
+        txtControles += "El nivel de recursos disponibles organizados (EA=" + EA + ") es limitado, advirtiendo sobre una vulnerabilidad crónica ante las tensiones cotidianas. ";
+    } else {
+        txtControles += "El sujeto cuenta con un nivel adecuado de recursos disponibles y organizados (EA=" + EA + ") para tomar decisiones de forma deliberada. ";
+    }
+
+    // Paso 3: EB, Lambda, EBPer
     if (M > (WSumC + 1.5)) {
-        txtControles += "El estilo vivencial es definido de estilo introversivo, tendiendo a procesar la información internamente, utilizando la ideación y la reflexión antes de actuar, manteniendo las emociones en segundo plano al tomar decisiones. ";
+        txtControles += "El estilo vivencial (EB) introversivo señala que el sujeto procesa la información internamente, utilizando la ideación y demorando la decisión para reflexionar. ";
     } else if (WSumC > (M + 1.5)) {
-        txtControles += "El estilo vivencial es definido de estilo extratensivo, tendiendo a mezclar los sentimientos con sus procesos cognitivos, intercambiando con el medio y resolviendo mediante ensayo y error. ";
+        txtControles += "El estilo vivencial (EB) extratensivo muestra que el sujeto tiende a mezclar sus emociones con sus procesos cognitivos, resolviendo mediante ensayo y error, influido por lo externo. ";
     } else {
-        txtControles += "El estilo vivencial es ambigual, observándose que el sujeto no cuenta con un patrón consistente a la hora de la toma de decisiones, oscilando entre la reflexión ideativa y el ensayo y error emocional. ";
+        txtControles += "El estilo vivencial (EB) es ambigual, careciendo de un patrón de afrontamiento consistente, oscilando entre la ideación y el ensayo-error emocional. ";
+    }
+    if (L > 0.99) {
+        txtControles += "Al acompañarse de un valor de Lambda alto, advierte sobre una actitud defensiva situacional o estilo evitativo para no lidiar con la complejidad emocional. ";
+    }
+    if (EBPerText_C !== "N/A" && EBPerText_C !== "Inf" && parseFloat(EBPerText_C) > 2.5) {
+        txtControles += "El indicador EBPer elevado señala una rigidificación patológica de este estilo de respuesta, restando eficacia adaptativa. ";
     }
 
-    if (D < 0) {
-        if (AdjD < 0) {
-            txtControles += "En relación a sus recursos y tolerancia al estrés, se destaca que el sujeto presenta un estado de malestar crónico persistente frente a las demandas estimulares, dificultando el proceso de mantener y dirigir su conducta, indicando vulnerabilidad a la desorganización.";
-        } else {
-            txtControles += "En relación a sus recursos, se observa un estado de sobrecarga situacional (estrés agudo) debido a demandas del entorno actual, aunque en condiciones habituales el sujeto posee una capacidad base adecuada para dirigir sus conductas.";
-        }
-    } else {
-        txtControles += "Se destaca que el sujeto cuenta con los recursos suficientes para hacerle frente a las ansiedades o demandas estimulares del medio, mostrando estabilidad y buen control de la conducta.";
+    // Paso 4 y 5: eb vs EA
+    if ((eb_left + eb_right) > EA) {
+        txtControles += "Se observa además que las tensiones involuntarias (eb) superan los recursos deliberados (EA), lo que interfiere severamente con la eficacia cognitiva y predispone a la pérdida de control. ";
     }
+
+    txtControles += "<br><br><strong>Sector Central II: Estrés de Origen Situacional</strong><br>";
+
+    // Paso 1 y 2: D vs Adj D
+    if (D < 0 && AdjD < 0) {
+        txtControles += "Se detecta un estado de sobrecarga crónica exacerbado fuertemente por tensiones situacionales recientes, aumentando drásticamente la tendencia a la desorganización y la impulsividad (D y Adj D negativos). ";
+    } else if (D < AdjD) {
+        txtControles += "La capacidad actual de tolerancia al estrés (D=" + D + ") es inferior a la que posee habitualmente, producto de una fuerte tensión situacional que afecta su control. ";
+    } else {
+        txtControles += "No se registran tensiones situacionales agudas que mermen significativamente su capacidad de control base. ";
+    }
+
+    // Paso 3: m e Y
+    if (m > 0 || SumY_C > 0) {
+        if (m >= (3 * SumY_C)) {
+            txtControles += "El estrés situacional golpea fuertemente el área del pensamiento (predominio de m), generando tensión ideacional y una sensación de pérdida de control mental. ";
+        } else if (SumY_C >= (3 * m)) {
+            txtControles += "El estrés situacional abruma en el plano emocional (predominio de Y), provocando intensa parálisis, desamparo e indefensión afectiva. ";
+        } else {
+            txtControles += "El estrés situacional impacta tanto a nivel ideacional (pérdida de control mental) como emocional (desvalimiento). ";
+        }
+    }
+
+    // Paso 4: T, V, Egocentrismo
+    if (SumT_C > 1 || SumV_C > 0) {
+        txtControles += "Altera los equilibrios afectivos la presencia de fuertes necesidades de contacto (T>1) o autocrítica destructiva (V>0), sugiriendo indagar sobre pérdidas recientes, fracasos o sentimientos de soledad profunda. ";
+    }
+
+    // Paso 5: C Pura y D negativo (Impulsividad)
+    if (C > 0 && D < 0) {
+        txtControles += "¡ALERTA CRÍTICA!: La coexistencia de descargas emocionales sin control (Color Puro) junto a una merma en los recursos de contención (D<0) hace altísimamente probable que el sujeto derive en conductas de impulsividad real no modulada. ";
+    }
+
     txtControles += "</p>";
     clusters['Controles'] = txtControles;
 
