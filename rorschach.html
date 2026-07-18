@@ -1131,6 +1131,50 @@
 
 
     function calculate() {
+        const get = (id) => {
+            const el = document.getElementById(id);
+            return el ? parseFloat(el.value) || 0 : 0;
+        };
+        const set = (id, val) => {
+            const el = document.getElementById(id);
+            if(el) el.innerText = val;
+        };
+        
+        // CÁLCULO DE MEZCLAS COLOR-SOMBREADO (Excluyendo C', FC', C'F)
+        function calcularColSomb() {
+            const textEl = document.getElementById('v_Blends_text');
+            if (!textEl) return;
+            const text = textEl.value || "";
+            if (!text.trim()) return;
+            
+            const responses = text.split(/[\n\r, -]+/).filter(r => r.trim() !== "");
+            let colSombCount = 0;
+            
+            const colorCromatico = ['FC', 'CF', 'C'];
+            const sombreados = ['T', 'FT', 'TF', 'V', 'FV', 'VF', 'Y', 'FY', 'YF'];
+            
+            responses.forEach(resp => {
+                if (resp.includes('.')) {
+                    const determinantes = resp.split('.').map(d => d.trim().toUpperCase());
+                    let hasColor = false;
+                    let hasSomb = false;
+                    determinantes.forEach(d => {
+                        if (colorCromatico.includes(d)) hasColor = true;
+                        if (sombreados.includes(d)) hasSomb = true;
+                    });
+                    if (hasColor && hasSomb) {
+                        colSombCount++;
+                    }
+                }
+            });
+            
+            const colSombInput = document.getElementById('v_ColSomb');
+            if (colSombInput) {
+                colSombInput.value = colSombCount;
+            }
+        }
+        calcularColSomb();
+
         const updateStatus = (id, isPos, text) => {
             const el = document.getElementById(id);
             if(el) {
@@ -1434,14 +1478,25 @@
         updateIdx('idx_CDI', cdi, cdi >= 4);
 
         // OBS
-        let obs1 = check('c_obs_0', Dd > 3);
-        let obs2 = check('c_obs_1', get('v_Zf') > 12);
-        let obs3 = check('c_obs_2', Zd > 3.0);
-        let obs4 = check('c_obs_3', get('v_P') > 7);
-        let obs5 = check('c_obs_4', FQx_plus > 1);
+        let obs1 = check('c_obs_0', Dd > 3) ? 1 : 0;
+        let obs2 = check('c_obs_1', get('v_Zf') > 12) ? 1 : 0;
+        let obs3 = check('c_obs_2', Zd > 3.0) ? 1 : 0;
+        let obs4 = check('c_obs_3', get('v_P') > 7) ? 1 : 0;
+        let obs5 = check('c_obs_4', FQx_plus > 1) ? 1 : 0;
         
         let obs_count = obs1 + obs2 + obs3 + obs4 + obs5;
-        let is_obs = (obs_count === 5 || (obs_count >= 4 && FQx_plus > 3));
+        let obs_count_1to4 = obs1 + obs2 + obs3 + obs4;
+        let is_obs = false;
+        
+        if (obs_count === 5) {
+            is_obs = true;
+        } else if (obs_count_1to4 >= 2 && FQx_plus > 3) {
+            is_obs = true;
+        } else if (obs_count >= 3 && Xplus_val > 0.89) {
+            is_obs = true;
+        } else if (FQx_plus > 3 && Xplus_val > 0.89) {
+            is_obs = true;
+        }
         
         updateStatus('res_obs', is_obs, is_obs ? "Positivo: SI" : "Positivo: NO");
         updateIdx('idx_OBS', is_obs ? 'SI' : 'NO', is_obs);

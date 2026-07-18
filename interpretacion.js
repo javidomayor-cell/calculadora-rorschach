@@ -489,9 +489,9 @@ function generarInterpretacion() {
     }
 
     if (SumPon6_val > 12) {
-        txtIde += "¡ALERTA CRÍTICA!: Se observan fallas lógicas y deslices cognitivos severos (SumaPond6 elevada) que advierten sobre una disfunción grave del pensamiento, fracaso del juicio o ideación impulsiva y desorganizada. ";
+        txtIde += "¡ALERTA CRÍTICA!: Se observan fallas lógicas y deslices cognitivos severos (SumaPond6 = " + SumPon6_val + ") que advierten sobre una disfunción grave del pensamiento, fracaso del juicio o ideación impulsiva y desorganizada. ";
     } else if (SumPon6_val > 0) {
-        txtIde += "Se presentan algunos deslices cognitivos leves o inmadurez en la articulación del pensamiento, pero sin llegar a comprometer severamente el juicio de realidad. ";
+        txtIde += "Se presentan algunos deslices cognitivos leves o inmadurez en la articulación del pensamiento (SumaPond6 = " + SumPon6_val + "), pero sin llegar a comprometer severamente el juicio de realidad. ";
     } else {
         txtIde += "El sujeto presenta claridad de pensamiento, con un proceso ideativo lógico, coherente y libre de interferencias formales. ";
     }
