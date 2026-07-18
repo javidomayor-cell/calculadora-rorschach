@@ -1359,7 +1359,7 @@
         set('res_Hconten', H + H_paren + Hd + Hd_paren);
         set('res_Hpuro', H);
         set('res_PER_int', get('v_PER'));
-        const Isol = R > 0 ? ((get('v_Bt') + get('v_Cl') + get('v_Ge') + get('v_Ls') + 2*get('v_Na'))/R) : 0;
+        const Isol = R > 0 ? ((get('v_Bt') + 2*get('v_Cl') + get('v_Ge') + get('v_Ls') + 2*get('v_Na'))/R) : 0;
         set('res_Isol', Isol);
 
         // --- CONSTELACIONES ---
