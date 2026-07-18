@@ -1145,7 +1145,7 @@
             const textEl = document.getElementById('v_Blends_text');
             if (!textEl) return;
             const text = textEl.value || "";
-            if (!text.trim()) return;
+            
             
             const responses = text.split(/[\n\r, -]+/).filter(r => r.trim() !== "");
             let colSombCount = 0;

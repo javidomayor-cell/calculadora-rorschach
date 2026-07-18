@@ -65,8 +65,12 @@ function generarInterpretacion() {
     const DEPI = countChecked('depi', 6);
     const CDI = countChecked('cdi', 4);
     const SCON = countChecked('scon', 11);
-    const HVI = countChecked('hvi', 7);
-    const OBS = countChecked('obs', 4);
+    
+    // Leemos los resultados booleanos de HVI y OBS desde el DOM (idx_HVI y idx_OBS)
+    const elHVI = document.getElementById('idx_HVI');
+    const elOBS = document.getElementById('idx_OBS');
+    const HVI_is_pos = elHVI ? elHVI.innerText.trim() === 'SI' : false;
+    const OBS_is_pos = elOBS ? elOBS.innerText.trim() === 'SI' : false;
 
     const pStyle = "text-align: justify; font-size: 14px; margin-bottom: 12px;";
 
@@ -107,10 +111,22 @@ function generarInterpretacion() {
         txtControles += "El sujeto cuenta con un nivel adecuado de recursos disponibles y organizados (EA=" + EA + ") para tomar decisiones de forma deliberada. ";
     }
 
-    // Paso 3: EB, Lambda, EBPer
-    if (M > (WSumC + 1.5)) {
-        txtControles += "El estilo vivencial (EB) introversivo señala que el sujeto procesa la información internamente, utilizando la ideación y demorando la decisión para reflexionar. ";
-    } else if (WSumC > (M + 1.5)) {
+    // Paso 3: EB
+    const difEB = Math.abs(M - WSumC);
+    let estiloEB = "Ambigual";
+    if (EA <= 10) {
+        if (difEB >= 2) {
+            estiloEB = M > WSumC ? "Introversivo" : "Extratensivo";
+        }
+    } else {
+        if (difEB >= 2.5) {
+            estiloEB = M > WSumC ? "Introversivo" : "Extratensivo";
+        }
+    }
+
+    if (estiloEB === "Introversivo") {
+        txtControles += "El estilo vivencial (EB) introversivo indica preferencia por demorar la toma de decisiones, utilizando su vida interior y evaluación lógica antes de actuar. ";
+    } else if (estiloEB === "Extratensivo") {
         txtControles += "El estilo vivencial (EB) extratensivo muestra que el sujeto tiende a mezclar sus emociones con sus procesos cognitivos, resolviendo mediante ensayo y error, influido por lo externo. ";
     } else {
         txtControles += "El estilo vivencial (EB) es ambigual, careciendo de un patrón de afrontamiento consistente, oscilando entre la ideación y el ensayo-error emocional. ";
@@ -264,11 +280,11 @@ function generarInterpretacion() {
     const PHR = obtenerValorNum('v_PHR');
 
     // Paso 1: OBS e HVI
-    if (OBS > 0) {
-        txtAuto += "Se observa un Índice Obsesivo (OBS) positivo, indicando una marcada tendencia a la meticulosidad, cautela y perfeccionismo, lo que genera una autoevaluación sumamente rígida y exigente. ";
+    if (OBS_is_pos) {
+        txtAuto += "Se observa un índice Obsesivo (OBS) positivo, indicando una marcada tendencia a la meticulosidad, cautela y perfeccionismo, lo que genera una autoevaluación sumamente rígida y exigente. ";
     }
-    if (HVI > 0) {
-        txtAuto += "La presencia de un Índice de Hipervigilancia (HVI) positivo señala un estado continuo de alerta y desconfianza, afectando su autopercepción al mantenerlo excesivamente a la defensiva para proteger su integridad. ";
+    if (HVI_is_pos) {
+        txtAuto += "La presencia de un índice de Hipervigilancia (HVI) positivo señala un estado continuo de alerta y desconfianza, afectando su autopercepción al mantenerlo excesivamente a la defensiva para proteger su integridad. ";
     }
 
     // Paso 2: Narcisismo (Fr+rF)
@@ -340,7 +356,7 @@ function generarInterpretacion() {
     if (CDI > 3) {
         txtInter += "El Índice de Inhabilidad Social (CDI > 3) advierte sobre una estructura inmadura y una marcada ineptitud en la esfera relacional, presentando dificultades para enfrentar demandas sociales cotidianas y tendiendo a vínculos superficiales. ";
     }
-    if (HVI > 0) {
+    if (HVI_is_pos) {
         if (SumT_Inter === 0) {
             txtInter += "Presenta un Índice de Hipervigilancia (HVI) positivo acompañado de ausencia de Textura (T=0), lo que refleja un estilo hipervigilante crónico, estable y suspicaz hacia el entorno, manteniendo siempre distancia de seguridad. ";
         } else {
@@ -556,13 +572,13 @@ function generarInterpretacion() {
             agregarClusters(['Autopercepcion', 'Interpersonal']);
         }
         
-        if (!encontroConcatenada && M > WSumC) {
+        if (!encontroConcatenada && estiloEB === "Introversivo") {
             claveUsada += (claveUsada ? " / " : "") + "Estilo Introversivo ";
             agregarClusters(['Ideacion', 'Procesamiento', 'Mediacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
             encontroConcatenada = true;
         }
         
-        if (!encontroConcatenada && WSumC > M) {
+        if (!encontroConcatenada && estiloEB === "Extratensivo") {
             claveUsada += (claveUsada ? " / " : "") + "Estilo Extratensivo ";
             agregarClusters(['Afectos', 'Autopercepcion', 'Interpersonal', 'Controles', 'Procesamiento', 'Mediacion', 'Ideacion']);
             encontroConcatenada = true;
@@ -574,14 +590,14 @@ function generarInterpretacion() {
             encontroConcatenada = true;
         }
         
-        if (!encontroConcatenada && HVI >= 4) {
+        if (!encontroConcatenada && HVI_is_pos) {
             claveUsada += (claveUsada ? " / " : "") + "HVI Positivo ";
             agregarClusters(['Ideacion', 'Procesamiento', 'Mediacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
             encontroConcatenada = true;
         }
 
         if (ordenInterpretacion.length < 7) {
-            if (OBS >= 3) {
+            if (OBS_is_pos) {
                 claveUsada += (claveUsada ? " / " : "") + "Terciaria: OBS Positivo ";
                 agregarClusters(['Procesamiento', 'Mediacion', 'Ideacion', 'Controles', 'Afectos', 'Autopercepcion', 'Interpersonal']);
             } else if (DEPI === 5) {
@@ -630,12 +646,12 @@ function generarInterpretacion() {
         reporte += "<li><b>Constelación de Suicidio (S-CON):</b> Positivo. Indica potencial riesgo autodestructivo inminente (ALERTA).</li>";
         constelacionesActivas = true;
     }
-    if (HVI >= 4) {
+    if (HVI_is_pos) {
         reporte += "<li><b>Índice de Hipervigilancia (HVI):</b> Positivo. Indicando estado de alerta continua y mantenimiento de una actitud de recelo y desconfianza hacia su entorno.</li>";
         constelacionesActivas = true;
     }
-    if (OBS >= 3) {
-        reporte += "<li><b>Índice de Estilo Obsesivo (OBS):</b> Positivo. Marcado perfeccionismo y necesidad de control.</li>";
+    if (OBS_is_pos) {
+        reporte += "<li><b>Índice Obsesivo (OBS):</b> Positivo. Señala una marcada tendencia al perfeccionismo y dificultad para tolerar la ambigüedad.</li>";
         constelacionesActivas = true;
     }
 
