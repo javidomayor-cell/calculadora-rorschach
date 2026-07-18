@@ -1329,10 +1329,10 @@
         set('res_AnXy', get('v_An') + get('v_Xy'));
         set('res_MOR_autop', get('v_MOR'));
         const H_paren = get('v_Hparen'), Hd = get('v_Hd'), Hd_paren = get('v_Hdparen'), H = get('v_H');
-        const sumH_total = H + H_paren + Hd + Hd_paren;
-        set('res_SumH', sumH_total);
-        set('res_HH', `${H}:${sumH_total}`);
-        set('res_H_AllH', `${H}:${sumH_total}`);
+        const H_derecha = H_paren + Hd + Hd_paren;
+        set('res_SumH', H_derecha);
+        set('res_HH', `${H}:${H_derecha}`);
+        set('res_H_AllH', `${H}:${H_derecha}`);
 
         // --- AFECTOS ---
         set('res_FC_CFC', `${FC}:${CF+C}`);
