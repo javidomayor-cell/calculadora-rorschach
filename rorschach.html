@@ -2090,8 +2090,13 @@ function set(id, val) {
     if (!el) return;
     let numericVal = null;
     let originalVal = val;
-    if (typeof val === 'number') { numericVal = val; } 
-    else if (typeof val === 'string' && !isNaN(parseFloat(val)) && val.indexOf(':') === -1) { numericVal = parseFloat(val); }
+    if (typeof val === 'number') {
+        if (!Number.isInteger(val)) val = Number(val.toFixed(2));
+        numericVal = originalVal;
+    } else if (typeof val === 'string' && !isNaN(parseFloat(val)) && val.indexOf(':') === -1) {
+        numericVal = parseFloat(val);
+        if (!Number.isInteger(numericVal)) val = Number(numericVal.toFixed(2));
+    }
     let outputHTML = val;
     if (normasRorschach[id] && numericVal !== null) {
         let [min, max] = normasRorschach[id];
