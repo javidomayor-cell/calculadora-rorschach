@@ -74,6 +74,18 @@
             }
         }
     </style>
+
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#4a90e2">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW registrado!', reg))
+          .catch(err => console.log('SW fallo', err);
+      });
+    }
+  </script>
 </head>
 <body>
 
