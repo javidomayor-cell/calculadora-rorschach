@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rorschach-v2';
+const CACHE_NAME = 'rorschach-v3';
 const urlsToCache = [
   './',
   './index.html',
