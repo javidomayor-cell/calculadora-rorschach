@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Calculadoras Psicológicas</title>
+    <title>Calculadoras PsicolÃ³gicas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -74,21 +74,34 @@
             }
         }
     </style>
+
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#4a90e2">
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .then(reg => console.log("SW registrado!", reg))
+          .catch(err => console.log("SW fallo", err));
+      });
+    }
+  </script>
 </head>
 <body>
 
-    <h1>Software de Interpretación</h1>
+    <h1>Software de InterpretaciÃ³n</h1>
     
     <div class="buttons-container">
         <a href="rorschach.html" class="btn">
             Test de Rorschach
-            <span>(10 Láminas)</span>
+            <span>(10 LÃ¡minas)</span>
         </a>
         <a href="zulliger.html" class="btn">
             Test de Zulliger
-            <span>(3 Láminas)</span>
+            <span>(3 LÃ¡minas)</span>
         </a>
     </div>
 
 </body>
 </html>
+

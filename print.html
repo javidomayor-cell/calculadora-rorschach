@@ -34,7 +34,19 @@ table.calf th,table.calf td{border:1px solid #ccc;padding:1px 2px;text-align:cen
 .chk input{margin-right:4px;margin-top:1px;width:10px;height:10px;}
 .total{font-weight:bold;font-size:8.5px;margin-top:3px;border-top:1px dotted #999;padding-top:2px;}
 @media print{@page{size:A4 portrait;margin:8mm}.page{margin:0;padding:6mm 8mm;}}
-</style></head><body>
+</style>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#4a90e2">
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .then(reg => console.log("SW registrado!", reg))
+          .catch(err => console.log("SW fallo", err));
+      });
+    }
+  </script>
+</head><body>
 <!-- PAGE 1: SUMARIO ESTRUCTURAL -->
 <div class="page">
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
@@ -502,3 +514,4 @@ document.getElementById('txt_cdi').innerText  = 'Total: ' + v('idx_CDI') + ' (Po
 document.getElementById('txt_obs').innerText  = 'Positivo: ' + v('idx_OBS');
 </script>
 </body></html>
+
