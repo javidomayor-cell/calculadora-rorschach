@@ -24,9 +24,14 @@ function generarInterpretacion() {
     let reporte = "<h2 style='text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px;'>INFORME DE INTERPRETACIÓN</h2>";
     
     const [M, SumC] = obtenerEB();
-    const WSumC = obtenerValorNum('res_WSumC') || SumC; 
-    const D = obtenerValorNum('res_D');
-    const AdjD = obtenerValorNum('res_AdjD') || obtenerValorNum('res_Adjes'); 
+    const WSumC = obtenerValorNum('res_WSumC') || SumC;
+    
+    let D_val = document.getElementById('res_D') ? parseFloat((document.getElementById('res_D').innerText || "0").replace(',', '.')) : 0;
+    const D = isNaN(D_val) ? 0 : D_val;
+    
+    let AdjD_val = document.getElementById('res_AdjD') ? parseFloat((document.getElementById('res_AdjD').innerText || "0").replace(',', '.')) : 0;
+    const AdjD = isNaN(AdjD_val) ? 0 : AdjD_val;
+    
     const L = obtenerValorNum('res_L');
     const Afr = obtenerValorNum('res_Afr');
     const FC = obtenerValorNum('v_FC');
