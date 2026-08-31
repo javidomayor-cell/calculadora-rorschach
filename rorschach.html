@@ -1229,7 +1229,7 @@
         const FQx_plus = get('v_FQx_plus'), FQx_o = get('v_FQx_o'), FQx_u = get('v_FQx_u'), FQx_minus = get('v_FQx_minus'), FQx_sin = get('v_FQx_sin');
         
         // Parsear Múltiples (Blends)
-        const blendsText = (document.getElementById('v_Blends_text')?.value || "");
+        const blendsText = (document.getElementById('v_Blends_text')?.value || "").toUpperCase();
         const blendsArr = blendsText.split(/[\n\r, -]+/).filter(r => r.trim() !== "");
         const b = { M:0, FM:0, m:0, FC:0, CF:0, C:0, Cn:0, FCprime:0, CprimeF:0, Cprime:0, FT:0, TF:0, T:0, FV:0, VF:0, V:0, FY:0, YF:0, Y:0, Fr:0, rF:0, FD:0, F:0 };
         
@@ -1237,7 +1237,7 @@
             if (resp.includes('.')) {
                 const detList = resp.split('.');
                 detList.forEach(dRaw => {
-                    let d = dRaw.trim().replace(/a|p/g, ''); 
+                    let d = dRaw.trim().replace(/[´’`]/g, "'").replace(/-?[ap]/gi, ''); 
                     if (d === "M") b.M++;
                     else if (d === "FM") b.FM++;
                     else if (d === "m") b.m++; 
