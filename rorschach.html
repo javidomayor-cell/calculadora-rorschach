@@ -1227,16 +1227,55 @@
         set('res_W_D', W + D);
 
         const FQx_plus = get('v_FQx_plus'), FQx_o = get('v_FQx_o'), FQx_u = get('v_FQx_u'), FQx_minus = get('v_FQx_minus'), FQx_sin = get('v_FQx_sin');
+        
+        // Parsear Múltiples (Blends)
+        const blendsText = (document.getElementById('v_Blends_text')?.value || "");
+        const blendsArr = blendsText.split(/[\n\r, -]+/).filter(r => r.trim() !== "");
+        const b = { M:0, FM:0, m:0, FC:0, CF:0, C:0, Cn:0, FCprime:0, CprimeF:0, Cprime:0, FT:0, TF:0, T:0, FV:0, VF:0, V:0, FY:0, YF:0, Y:0, Fr:0, rF:0, FD:0, F:0 };
+        
+        blendsArr.forEach(resp => {
+            if (resp.includes('.')) {
+                const detList = resp.split('.');
+                detList.forEach(dRaw => {
+                    let d = dRaw.trim().replace(/a|p/g, ''); 
+                    if (d === "M") b.M++;
+                    else if (d === "FM") b.FM++;
+                    else if (d === "m") b.m++; 
+                    else if (d === "FC") b.FC++;
+                    else if (d === "CF") b.CF++;
+                    else if (d === "C") b.C++;
+                    else if (d === "Cn") b.Cn++;
+                    else if (d === "FC'") b.FCprime++;
+                    else if (d === "C'F") b.CprimeF++;
+                    else if (d === "C'") b.Cprime++;
+                    else if (d === "FT") b.FT++;
+                    else if (d === "TF") b.TF++;
+                    else if (d === "T") b.T++;
+                    else if (d === "FV") b.FV++;
+                    else if (d === "VF") b.VF++;
+                    else if (d === "V") b.V++;
+                    else if (d === "FY") b.FY++;
+                    else if (d === "YF") b.YF++;
+                    else if (d === "Y") b.Y++;
+                    else if (d === "Fr") b.Fr++;
+                    else if (d === "rF") b.rF++;
+                    else if (d === "FD") b.FD++;
+                    else if (d === "F") b.F++;
+                });
+            }
+        });
+
         const R = FQx_plus + FQx_o + FQx_u + FQx_minus + FQx_sin;
         set('res_R', R);
 
-        const F = get('v_F'), M = get('v_M'), FM = get('v_FM'), m = get('v_m');
-        const FC = get('v_FC'), CF = get('v_CF'), C = get('v_C');
-        const SumCprime = get('v_FCprime') + get('v_CprimeF') + get('v_Cprime');
-        const SumT = get('v_FT') + get('v_TF') + get('v_T');
-        const SumV = get('v_FV') + get('v_VF') + get('v_V');
-        const SumY = get('v_FY') + get('v_YF') + get('v_Y');
-        const Fr_rF = get('v_Fr') + get('v_rF');
+        const F = get('v_F') + b.F;
+        const M = get('v_M') + b.M, FM = get('v_FM') + b.FM, m = get('v_m') + b.m;
+        const FC = get('v_FC') + b.FC, CF = get('v_CF') + b.CF, C = get('v_C') + b.C;
+        const SumCprime = get('v_FCprime') + b.FCprime + get('v_CprimeF') + b.CprimeF + get('v_Cprime') + b.Cprime;
+        const SumT = get('v_FT') + b.FT + get('v_TF') + b.TF + get('v_T') + b.T;
+        const SumV = get('v_FV') + b.FV + get('v_VF') + b.VF + get('v_V') + b.V;
+        const SumY = get('v_FY') + b.FY + get('v_YF') + b.YF + get('v_Y') + b.Y;
+        const Fr_rF = get('v_Fr') + b.Fr + get('v_rF') + b.rF;
 
         // L, EB, EA, eb, es
         let L_val = (R > 0 && R-F > 0) ? (F/(R-F)) : ((R-F)===0 && F>0 ? Infinity : 0);
